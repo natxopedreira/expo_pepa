@@ -11,6 +11,7 @@
 void controlImagenes::setup(){
     Tweenzor::init();
     
+    /// video que usaremos para enmascarar
     mascaraVideo.loadMovie("Comp 1.mp4", OF_QTKIT_DECODE_PIXELS_AND_TEXTURE);
     mascaraVideo.setPosition(0.01);
     
@@ -22,23 +23,28 @@ void controlImagenes::setup(){
     indexFicha = 0;
     alphaBotones = 0;
     
+    /// botones para seleccioar ciudad
     botonCoruna.setup(200, 550, "coru", "btn/coru.png");
     botonCadiz.setup(450, 550, "cadiz", "btn/cadiz.png");
 
     ofAddListener(botonCoruna.seleccionBoton, this,  &controlImagenes::botonCiudad);
     ofAddListener(botonCadiz.seleccionBoton, this,  &controlImagenes::botonCiudad);
     
+    /// sonidos para indicar acierto/fallo
     sndAcierto.loadSound("Temple.aiff");
     sndFallo.loadSound("Wild Eep.aiff");
     
     fuenteMarcador.loadFont("GothamRounded-Book.otf", 108);
+    fuenteLeyenda.loadFont("GothamRounded-Book.otf", 14);
     
-    tiempoPartida.setup(60000, false); // iniciamos el timer
+    /// timer para la partida, 2 minutos
+    tiempoPartida.setup(120000, false); // iniciamos el timer
     tiempoPartida.stopTimer();
 }
 void controlImagenes::cargaFichas(){
     
     /// cargaremos desde un xml
+    /// ahora mismo esta asi para ver
     imagenJuego * ficha0 = new imagenJuego();
     ficha0->setup("nature.jpg", "coru");
     
@@ -82,26 +88,44 @@ void controlImagenes::update(){
 
 void controlImagenes::draw(){
     mascara.draw();
+    
+    /// debug para ver la zona de la foto
     ofPushStyle();
-    ofNoFill();
-    ofRect(80, 60, 640, 480);
+        ofNoFill();
+        ofRect(80, 60, 640, 480);
     ofPopStyle();
     
-    fichas.at(indexFicha)->draw();
-
     
+    /// display del marcador de tiempo de la foto
+    fichas.at(indexFicha)->draw();
+    
+    
+    
+    /// debug de mascara
     mascaraVideo.draw(850, 0,320,240);
     
+    
+    /// botones de seleccion de ciudad
     ofPushStyle();
-    ofSetColor(255,255,255,alphaBotones);
-    botonCoruna.draw();
-    botonCadiz.draw();
+        ofSetColor(255,255,255,alphaBotones);
+        botonCoruna.draw();
+        botonCadiz.draw();
     ofPopStyle();
     
-    fuenteMarcador.drawString(ofToString(puntos), 890, 500);
+    
+    /// estos son tus puntos
+    /// mejor siempre dos digitos
+    fuenteLeyenda.drawString("puntuacion", 910, 385);
+    if(puntos<10){
+        fuenteMarcador.drawString("0"+ofToString(puntos), 890, 500);
+    }else{
+        fuenteMarcador.drawString(ofToString(puntos), 890, 500);
+    }
 }
 
 void controlImagenes::lanzaFicha(){
+    /// lanzas una imagen
+    
     alphaBotones = 0;
     if(indexFicha<fichas.size()-1){
         indexFicha ++;
@@ -122,12 +146,13 @@ void controlImagenes::lanzaFicha(){
 }
 
 void controlImagenes::botonCiudad(string & s){
+    /// has escojido una ciudad
+    
     cout << "boton:: " << s << endl;
     
     botonCoruna.activo = false;
     botonCadiz.activo = false;
-    /// has escojido una ciudad
-    // pausamos el video y el timer
+
     if(mascaraVideo.isPlaying()) mascaraVideo.setPaused(true);
     fichas.at(indexFicha)->temporizador.pauseTimer();
     
@@ -141,4 +166,3 @@ void controlImagenes::botonCiudad(string & s){
         sndFallo.play();
     }
 }
-

@@ -11,6 +11,7 @@
 
 imagenJuego::imagenJuego(){
 	ptos = 0;
+    tiempo = 15000;
 }
 
 void imagenJuego::setup(string rutaImagen, string _ciudad){
@@ -19,7 +20,7 @@ void imagenJuego::setup(string rutaImagen, string _ciudad){
     
     ciudad = _ciudad;
     
-	temporizador.setup(15000, false); // iniciamos el timer
+	temporizador.setup(tiempo, false); // iniciamos el timer
     temporizador.stopTimer();
     
 	ofAddListener(temporizador.TIMER_REACHED, this, &imagenJuego::timeOut); // listener tiempo finalizado

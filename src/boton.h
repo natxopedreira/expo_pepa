@@ -12,12 +12,14 @@
 #define _BOTON
 
 #include "ofMain.h"
+
 class boton {
 public:
     int ancho, alto, posx, posy;
     bool touchOver;
     bool activo;
     string valor;
+    
     ofImage fondo;
     ofEvent<string> seleccionBoton;
     

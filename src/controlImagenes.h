@@ -12,6 +12,7 @@
 #include "ofMain.h"
 #include "imagenJuego.h"
 #include "boton.h"
+#include "utilidadesDraw.h"
 
 //non core addons
 #include "ofxTweenzor.h"
@@ -22,20 +23,20 @@ class controlImagenes{
 public:
 
     ofxMask mascara;
-    vector<imagenJuego*> fichas;
     ofQTKitPlayer mascaraVideo;
+    ofxTimer tiempoPartida;
+    ofTrueTypeFont fuenteMarcador;
+    ofTrueTypeFont fuenteLeyenda;
+    ofSoundPlayer  sndAcierto, sndFallo;
+    
+    vector<imagenJuego*> fichas;
+    
     int indexFicha;
     int puntos;
-    float alphaBotones;
-    
-    ofxTimer tiempoPartida;
+    float alphaBotones;   
     
     boton botonCoruna;
     boton botonCadiz;
-    
-    ofTrueTypeFont fuenteMarcador;
-    
-    ofSoundPlayer  sndAcierto, sndFallo;
     
     void setup();
     void update();
@@ -44,6 +45,7 @@ public:
     void cargaFichas();
     void lanzaFicha();
     void botonCiudad(string & s);
+    void pacman(int resolution, float radius, float loaded, int px, int py);
 };
 
 #endif

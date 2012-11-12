@@ -26,7 +26,6 @@
 
 #include "ofMain.h"
 
-
 // non core addons
 #include "ofxTimer.h"
 
@@ -39,8 +38,7 @@ class imagenJuego{
     string ciudad;
 	ofxTimer temporizador;
 	int ptos;
-	
-	
+    float tiempo;
 	
 	imagenJuego();
 	
