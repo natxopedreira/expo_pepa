@@ -39,7 +39,7 @@ void controlImagenes::setup(){
     
     /// timer para la partida, 2 minutos
     tiempoPartida.setup(120000, false); // iniciamos el timer
-    tiempoPartida.stopTimer();
+    tiempoPartida.startTimer();
 }
 void controlImagenes::cargaFichas(){
     
@@ -102,7 +102,7 @@ void controlImagenes::draw(){
     
     
     /// debug de mascara
-    mascaraVideo.draw(850, 0,320,240);
+    //mascaraVideo.draw(850, 0,320,240);
     
     
     /// botones de seleccion de ciudad
@@ -115,12 +115,18 @@ void controlImagenes::draw(){
     
     /// estos son tus puntos
     /// mejor siempre dos digitos
-    fuenteLeyenda.drawString("puntuacion", 910, 385);
+    fuenteLeyenda.drawString("su puntuacion", 910, 385);
     if(puntos<10){
         fuenteMarcador.drawString("0"+ofToString(puntos), 890, 500);
     }else{
         fuenteMarcador.drawString(ofToString(puntos), 890, 500);
     }
+    
+    
+    // marcador de tiempo restante
+    fuenteLeyenda.drawString("tiempo restante", 890, 90);
+    fuenteMarcador.drawString(ofToString((int)tiempoPartida.getTimeLeftInSeconds()), 890, 200);
+    
 }
 
 void controlImagenes::lanzaFicha(){

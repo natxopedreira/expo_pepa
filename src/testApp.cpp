@@ -6,63 +6,63 @@ void testApp::setup(){
     ofEnableAlphaBlending();
     ofBackground(0, 0, 0);
     
-    juegoImagenes.setup();
+    partida = NULL;
 	
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-    juegoImagenes.update();
+   if(partida) partida->update();
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
-    juegoImagenes.draw();
+    if(partida){
+      partida->draw();   
+    }else{
+      // esta en reposo sin ningun user
+      ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 500, 350);
+    }
     
     ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), 10, 10);
 }
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-    juegoImagenes.lanzaFicha();
+    if(key == 'n'){
+        partida = new controlImagenes();
+        partida->setup();
+    }
+    
+    if(key == 'd' && partida){
+        delete partida;
+        partida = new controlImagenes();
+        partida->setup();
+    }
+
+    if(partida) partida->lanzaFicha();
 }
 
 //--------------------------------------------------------------
-void testApp::keyReleased(int key){
-
-}
+void testApp::keyReleased(int key){}
 
 //--------------------------------------------------------------
-void testApp::mouseMoved(int x, int y ){
-
-}
+void testApp::mouseMoved(int x, int y ){}
 
 //--------------------------------------------------------------
-void testApp::mouseDragged(int x, int y, int button){
-
-}
+void testApp::mouseDragged(int x, int y, int button){}
 
 //--------------------------------------------------------------
-void testApp::mousePressed(int x, int y, int button){
-
-}
+void testApp::mousePressed(int x, int y, int button){}
 
 //--------------------------------------------------------------
-void testApp::mouseReleased(int x, int y, int button){
-
-}
+void testApp::mouseReleased(int x, int y, int button){}
 
 //--------------------------------------------------------------
-void testApp::windowResized(int w, int h){
-
-}
+void testApp::windowResized(int w, int h){}
 
 //--------------------------------------------------------------
-void testApp::gotMessage(ofMessage msg){
-
-}
+void testApp::gotMessage(ofMessage msg){}
 
 //--------------------------------------------------------------
-void testApp::dragEvent(ofDragInfo dragInfo){ 
-
-}
+void testApp::dragEvent(ofDragInfo dragInfo){}
