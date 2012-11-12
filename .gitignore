@@ -1,0 +1,7 @@
+
+*.xcconfig
+*.xcodeproj
+*.plist
+/bin
+/build
+.DS_Store

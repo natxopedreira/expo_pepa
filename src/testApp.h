@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+
+//non core addons
 #include "controlImagenes.h"
 
 class testApp : public ofBaseApp{
@@ -21,4 +23,5 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
 	controlImagenes * partida;
+    
 };

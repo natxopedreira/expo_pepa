@@ -21,6 +21,7 @@ void testApp::draw(){
       partida->draw();   
     }else{
       // esta en reposo sin ningun user
+        
       ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 500, 350);
     }
     

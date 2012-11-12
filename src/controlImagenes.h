@@ -2,7 +2,7 @@
 //  controlImagenes.h
 //  pepa
 //
-//  Created by ignacio pedreira gonzalez on 09/11/12.
+//  Created by natxo on 09/11/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
