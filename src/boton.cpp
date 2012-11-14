@@ -18,6 +18,7 @@ boton::boton(){
     activo = false;
 }
 
+//--------------------------------------------------------------
 void boton::setup(int _posx,int _posy, string _valor, string _url){
     posx = _posx;
     posy = _posy;
@@ -31,9 +32,11 @@ void boton::setup(int _posx,int _posy, string _valor, string _url){
     alto = fondo.getHeight();
 }
 
+//--------------------------------------------------------------
 void boton::update(){
 }
 
+//--------------------------------------------------------------
 void boton::draw(){
    // ofPushStyle();
     //ofSetColor(255,255,255);
@@ -43,12 +46,14 @@ void boton::draw(){
    // ofPopStyle();
 }
 
+//--------------------------------------------------------------
 bool boton::isUnder(int px, int py){  
     if (px < posx || px > posx + ancho) return false;  
     if (py < posy || py > posy + alto) return false;  
     return true;  
 }
 
+//--------------------------------------------------------------
 void boton::mousePressed(ofMouseEventArgs& rArgs){
     if(isUnder(rArgs.x, rArgs.y)){
         touchOver = true;
@@ -57,6 +62,7 @@ void boton::mousePressed(ofMouseEventArgs& rArgs){
     
 }
 
+//--------------------------------------------------------------
 void boton::mouseReleased(ofMouseEventArgs& rArgs){
      if(touchOver) touchOver = false;
 }

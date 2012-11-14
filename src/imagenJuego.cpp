@@ -14,6 +14,7 @@ imagenJuego::imagenJuego(){
     tiempo = 15000;
 }
 
+//--------------------------------------------------------------
 void imagenJuego::setup(string rutaImagen, string _ciudad){
 	
 	imagen.loadImage(rutaImagen); // cargamos la imagen
@@ -27,6 +28,7 @@ void imagenJuego::setup(string rutaImagen, string _ciudad){
 
 }
 
+//--------------------------------------------------------------
 void imagenJuego::update(){
   
 	if(!temporizador.isTimerFinished()){
@@ -35,10 +37,14 @@ void imagenJuego::update(){
 	}
 }
 
+//--------------------------------------------------------------
 void imagenJuego::timeOut(ofEventArgs & args){
 	
 }
 
+//--------------------------------------------------------------
 void imagenJuego::draw(){
+    // float per = temporizador.getTimeLeftInMillis()/tiempo;
+   // ofRect(80, 60, 640*per, 20);
 	ofDrawBitmapString("tiempo:: " + ofToString(ptos), ofPoint(50,50));
 }

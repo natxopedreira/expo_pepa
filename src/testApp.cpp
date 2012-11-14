@@ -17,12 +17,15 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
-    if(partida){
+    
+    if(partida && !partida->partidaTerminada){
       partida->draw();   
-    }else{
+    }else if(partida && partida->partidaTerminada){
       // esta en reposo sin ningun user
-        
-      ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 500, 350);
+      ofDrawBitmapStringHighlight("PARTIDA TERMINADA "+ofToString(partida->puntos), 500, 350);
+    }else{
+    
+    ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 500, 350);
     }
     
     ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), 10, 10);
@@ -40,8 +43,6 @@ void testApp::keyPressed(int key){
         partida = new controlImagenes();
         partida->setup();
     }
-
-    if(partida) partida->lanzaFicha();
 }
 
 //--------------------------------------------------------------

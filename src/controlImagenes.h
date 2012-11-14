@@ -27,13 +27,20 @@ public:
     ofxTimer tiempoPartida;
     ofTrueTypeFont fuenteMarcador;
     ofTrueTypeFont fuenteLeyenda;
+    ofTrueTypeFont fuenteAlerta;
     ofSoundPlayer  sndAcierto, sndFallo;
+    ofxTimer tiempoEntreFoto;
     
     vector<imagenJuego*> fichas;
     
     int indexFicha;
     int puntos;
-    float alphaBotones;   
+    float alphaBotones;
+    bool mensaje;
+    string mensajeStr;
+    float alphaMsjStr;
+    float scaleMsjStr;
+    bool partidaTerminada;
     
     boton botonCoruna;
     boton botonCadiz;
@@ -46,6 +53,11 @@ public:
     void lanzaFicha();
     void botonCiudad(string & s);
     void pacman(int resolution, float radius, float loaded, int px, int py);
+    
+    void mensajeRespuesta(string s);
+    void onCompleteMsg(float* arg);
+    void cambiaFoto(ofEventArgs & args);
+    void finTiempoPartida(ofEventArgs & args);
 };
 
 #endif

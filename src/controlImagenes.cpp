@@ -8,6 +8,7 @@
 
 #include "controlImagenes.h"
 
+//--------------------------------------------------------------
 void controlImagenes::setup(){
     Tweenzor::init();
     
@@ -36,11 +37,30 @@ void controlImagenes::setup(){
     
     fuenteMarcador.loadFont("GothamRounded-Book.otf", 108);
     fuenteLeyenda.loadFont("GothamRounded-Book.otf", 14);
+    fuenteAlerta.loadFont("GothamRounded-Book.otf", 50);
     
     /// timer para la partida, 2 minutos
     tiempoPartida.setup(120000, false); // iniciamos el timer
     tiempoPartida.startTimer();
+    
+    mensaje = false;
+    alphaMsjStr = 0;
+    scaleMsjStr = 0;
+    
+    
+    /// timer para el paso entre fotos
+    tiempoEntreFoto.setup(1500, false); // iniciamos el timer
+    tiempoEntreFoto.stopTimer();
+    
+    ofAddListener(tiempoEntreFoto.TIMER_REACHED, this, &controlImagenes::cambiaFoto);
+    ofAddListener(tiempoPartida.TIMER_REACHED, this, &controlImagenes::finTiempoPartida);
+    
+    partidaTerminada = false;
+    
+    lanzaFicha();
 }
+
+//--------------------------------------------------------------
 void controlImagenes::cargaFichas(){
     
     /// cargaremos desde un xml
@@ -63,6 +83,7 @@ void controlImagenes::cargaFichas(){
     fichas.push_back(ficha3);
 }
 
+//--------------------------------------------------------------
 void controlImagenes::update(){
     
     Tweenzor::update( ofGetElapsedTimeMillis() );
@@ -86,6 +107,7 @@ void controlImagenes::update(){
     botonCadiz.update();
 }
 
+//--------------------------------------------------------------
 void controlImagenes::draw(){
     mascara.draw();
     
@@ -127,8 +149,17 @@ void controlImagenes::draw(){
     fuenteLeyenda.drawString("tiempo restante", 890, 90);
     fuenteMarcador.drawString(ofToString((int)tiempoPartida.getTimeLeftInSeconds()), 890, 200);
     
+    if(mensaje){
+        ofPushStyle();
+        // acabas de pulsar una opcion y esto dice ok o fallo
+        ofSetColor(255, 255, 255, alphaMsjStr);
+        fuenteAlerta.drawString(ofToString(mensajeStr), 300, 280);
+        
+        ofPopStyle();
+    }
 }
 
+//--------------------------------------------------------------
 void controlImagenes::lanzaFicha(){
     /// lanzas una imagen
     
@@ -145,12 +176,17 @@ void controlImagenes::lanzaFicha(){
     fichas.at(indexFicha)->temporizador.reset();
     fichas.at(indexFicha)->temporizador.startTimer();
     
-    Tweenzor::add(&alphaBotones, 0, 255, 0.5f, 3.f);
+    Tweenzor::add(&alphaBotones, 0, 255, 0.5f, 3.f,EASE_IN_OUT_SINE);
     
     botonCoruna.activo = true;
     botonCadiz.activo = true;
+    
+    mensajeStr = "";
+    alphaMsjStr = 0;
+    
 }
 
+//--------------------------------------------------------------
 void controlImagenes::botonCiudad(string & s){
     /// has escojido una ciudad
     
@@ -165,10 +201,38 @@ void controlImagenes::botonCiudad(string & s){
     // comprobamos si es correcto o no TODO
     if(fichas.at(indexFicha)->ciudad == s){
         // sumamos los ptos si has acertado
-        cout << "sumas " <<  fichas.at(indexFicha)->ptos << " ptos." << endl;
+        // cout << "sumas " <<  fichas.at(indexFicha)->ptos << " ptos." << endl;
         puntos += fichas.at(indexFicha)->ptos;
-        sndAcierto.play();
+        mensajeRespuesta("correcto");
     }else{
+        mensajeRespuesta("error");
+    }
+}
+
+//--------------------------------------------------------------
+void controlImagenes::mensajeRespuesta(string s){
+    mensajeStr = s;
+    mensaje = true;
+    Tweenzor::add(&alphaMsjStr, 0, 255, 0.0f, 0.3f,EASE_IN_OUT_QUAD);
+    Tweenzor::addCompleteListener( Tweenzor::getTween(&alphaMsjStr), this, &controlImagenes::onCompleteMsg);
+}
+
+//--------------------------------------------------------------
+void controlImagenes::onCompleteMsg(float* arg) {
+    if(mensajeStr == "correcto"){
+        sndAcierto.play();
+    }else if (mensajeStr == "error") {
         sndFallo.play();
     }
+    tiempoEntreFoto.startTimer();
+}
+
+//--------------------------------------------------------------
+void controlImagenes::cambiaFoto(ofEventArgs & args){
+    lanzaFicha();
+}
+
+//--------------------------------------------------------------
+void controlImagenes::finTiempoPartida(ofEventArgs & args){
+    partidaTerminada = true;
 }
