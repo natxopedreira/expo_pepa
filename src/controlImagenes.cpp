@@ -40,7 +40,7 @@ void controlImagenes::setup(){
     fuenteAlerta.loadFont("GothamRounded-Book.otf", 50);
     
     /// timer para la partida, 2 minutos
-    tiempoPartida.setup(120000, false); // iniciamos el timer
+    tiempoPartida.setup(12000, false); // iniciamos el timer
     tiempoPartida.startTimer();
     
     mensaje = false;
@@ -165,8 +165,16 @@ void controlImagenes::update(){
     ofClear(0);
     ofSetColor(255,255,255);
     // marcador de tiempo restante
-    fuenteLeyenda.drawString("tiempo restante", 0, 20);
-    fuenteMarcador.drawString(ofToString((int)tiempoPartida.getTimeLeftInSeconds()), 0, 150);
+    if(!partidaTerminada){
+        fuenteLeyenda.drawString("tiempo restante", 0, 20);
+        float minutos = tiempoPartida.getTimeLeftInSeconds()/60;
+        string segundos = ofToString(minutos);
+        vector<string> splitItems = ofSplitString(segundos, ".");
+        float segs = ofToFloat("0."+splitItems[1]);
+        float segsmins = segs*60;
+        string mensajeTiempo = ofToString((int)segsmins);
+        fuenteMarcador.drawString(splitItems[0]+":"+mensajeTiempo, 0, 150);
+    }
     fboTiempo.end();
     
     
