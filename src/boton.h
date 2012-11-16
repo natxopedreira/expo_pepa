@@ -15,7 +15,7 @@
 
 class boton {
 public:
-    int ancho, alto, posx, posy;
+    int ancho, alto, posx, posy, screenPosx, screenPosy;
     bool touchOver;
     bool activo;
     string valor;

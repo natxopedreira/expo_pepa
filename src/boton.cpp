@@ -14,6 +14,8 @@ boton::boton(){
     alto = 0;
     posx = 0;
     posy = 0;
+    screenPosx = 0; 
+    screenPosy = 0;
     touchOver = false;
     activo = false;
 }
@@ -48,8 +50,8 @@ void boton::draw(){
 
 //--------------------------------------------------------------
 bool boton::isUnder(int px, int py){  
-    if (px < posx || px > posx + ancho) return false;  
-    if (py < posy || py > posy + alto) return false;  
+    if (px < screenPosx || px > screenPosx + ancho) return false;  
+    if (py < screenPosy || py > screenPosy + alto) return false;  
     return true;  
 }
 

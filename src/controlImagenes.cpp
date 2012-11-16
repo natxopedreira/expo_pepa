@@ -25,8 +25,8 @@ void controlImagenes::setup(){
     alphaBotones = 0;
     
     /// botones para seleccioar ciudad
-    botonCoruna.setup(200, 550, "coru", "btn/coru.png");
-    botonCadiz.setup(450, 550, "cadiz", "btn/cadiz.png");
+    botonCoruna.setup(10, 20, "coru", "btn/coru.png");
+    botonCadiz.setup(10, 20, "cadiz", "btn/cadiz.png");
 
     ofAddListener(botonCoruna.seleccionBoton, this,  &controlImagenes::botonCiudad);
     ofAddListener(botonCadiz.seleccionBoton, this,  &controlImagenes::botonCiudad);
@@ -58,6 +58,45 @@ void controlImagenes::setup(){
     partidaTerminada = false;
     
     lanzaFicha();
+    
+    /*
+    ofxInteractiveViewPort viewportImagen, viewportAciertos, viewportMascara, viewportCoru, viewportCadiz, viewportTiempo;
+    ofFbo fboImagen, fboAciertos, fboMascara, fboCou, fboCadiz, fboTiempo;
+     */
+    fboMascara.allocate(800, 600);
+    fboImagen.allocate(640, 480);
+    fboAciertos.allocate(320, 240);
+    fboCou.allocate(320, 240);
+    fboCadiz.allocate(320, 240);
+    fboTiempo.allocate(320, 240);
+
+    
+    fboImagen.begin();
+    ofClear(0);
+    fboImagen.end(); 
+    
+    fboAciertos.begin();
+    ofClear(0);
+    fboAciertos.end(); 
+    
+    fboCou.begin();
+    ofClear(0);
+    fboCou.end();  
+    
+    fboCadiz.begin();
+    ofClear(0);
+    fboCadiz.end(); 
+    
+    fboTiempo.begin();
+    ofClear(0);
+    fboTiempo.end();
+    
+    viewportImagen.loadSettings(0);
+    viewportAciertos.loadSettings(1);
+    viewportMascara.loadSettings(2);
+    viewportCoru.loadSettings(3);
+    viewportCadiz.loadSettings(4);
+    viewportTiempo.loadSettings(5);
 }
 
 //--------------------------------------------------------------
@@ -81,6 +120,7 @@ void controlImagenes::cargaFichas(){
     fichas.push_back(ficha1);
     fichas.push_back(ficha2);
     fichas.push_back(ficha3);
+
 }
 
 //--------------------------------------------------------------
@@ -105,18 +145,67 @@ void controlImagenes::update(){
     
     botonCoruna.update();
     botonCadiz.update();
+    
+    fboAciertos.begin();
+    ofClear(0);
+    ofSetColor(255,255,255);
+    /// estos son tus puntos
+    /// mejor siempre dos digitos
+    fuenteLeyenda.drawString("su puntuacion", 0, 20);
+    if(puntos<10){
+        fuenteMarcador.drawString("0"+ofToString(puntos), 0, 150);
+    }else{
+        fuenteMarcador.drawString(ofToString(puntos), 0, 150);
+    }
+    
+    fboAciertos.end(); 
+    
+
+    fboTiempo.begin();
+    ofClear(0);
+    ofSetColor(255,255,255);
+    // marcador de tiempo restante
+    fuenteLeyenda.drawString("tiempo restante", 0, 20);
+    fuenteMarcador.drawString(ofToString((int)tiempoPartida.getTimeLeftInSeconds()), 0, 150);
+    fboTiempo.end();
+    
+    
+    fboCou.begin();
+    ofClear(0);
+    /// botones de seleccion de ciudad
+    ofPushStyle();
+    ofSetColor(255,255,255,alphaBotones);
+    botonCoruna.draw();
+    ofPopStyle();
+    fboCou.end();  
+    
+    fboCadiz.begin();
+    ofClear(0);
+    /// botones de seleccion de ciudad
+    ofPushStyle();
+    ofSetColor(255,255,255,alphaBotones);
+    botonCadiz.draw();
+    ofPopStyle();
+    fboCadiz.end(); 
+    
+    
+    botonCoruna.screenPosx = viewportCoru.getPos().x-(viewportCoru.getWidth()/2);
+    botonCoruna.screenPosy = viewportCoru.getPos().y-(viewportCoru.getHeight()/2);
+    
+    botonCadiz.screenPosx = viewportCadiz.getPos().x-(viewportCadiz.getWidth()/2);
+    botonCadiz.screenPosy = viewportCadiz.getPos().y-(viewportCadiz.getHeight()/2);
 }
 
 //--------------------------------------------------------------
 void controlImagenes::draw(){
-    mascara.draw();
+    viewportMascara.draw(mascara.getTextureReference());
+    viewportAciertos.draw(fboAciertos.getTextureReference());
+    viewportTiempo.draw(fboTiempo.getTextureReference());
+    viewportCoru.draw(fboCou.getTextureReference());
+    viewportCadiz.draw(fboCadiz.getTextureReference());
+    //mascara.draw();
     
-    /// debug para ver la zona de la foto
-    ofPushStyle();
-        ofNoFill();
-        ofRect(80, 60, 640, 480);
-    ofPopStyle();
-    
+
     
     /// display del marcador de tiempo de la foto
     fichas.at(indexFicha)->draw();
@@ -127,27 +216,13 @@ void controlImagenes::draw(){
     //mascaraVideo.draw(850, 0,320,240);
     
     
-    /// botones de seleccion de ciudad
-    ofPushStyle();
-        ofSetColor(255,255,255,alphaBotones);
-        botonCoruna.draw();
-        botonCadiz.draw();
-    ofPopStyle();
+
     
     
-    /// estos son tus puntos
-    /// mejor siempre dos digitos
-    fuenteLeyenda.drawString("su puntuacion", 910, 385);
-    if(puntos<10){
-        fuenteMarcador.drawString("0"+ofToString(puntos), 890, 500);
-    }else{
-        fuenteMarcador.drawString(ofToString(puntos), 890, 500);
-    }
+
     
     
-    // marcador de tiempo restante
-    fuenteLeyenda.drawString("tiempo restante", 890, 90);
-    fuenteMarcador.drawString(ofToString((int)tiempoPartida.getTimeLeftInSeconds()), 890, 200);
+
     
     if(mensaje){
         ofPushStyle();
@@ -225,8 +300,18 @@ void controlImagenes::onCompleteMsg(float* arg) {
         sndFallo.play();
     }
     tiempoEntreFoto.startTimer();
+    
+    
 }
+void controlImagenes::guardaPosiciones(){
+    viewportImagen.saveSettings();
+    viewportAciertos.saveSettings();
+    viewportMascara.saveSettings();
+    viewportCoru.saveSettings();
+    viewportCadiz.saveSettings();
+    viewportTiempo.saveSettings();
 
+}
 //--------------------------------------------------------------
 void controlImagenes::cambiaFoto(ofEventArgs & args){
     lanzaFicha();

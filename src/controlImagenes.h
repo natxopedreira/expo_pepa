@@ -17,6 +17,8 @@
 //non core addons
 #include "ofxTweenzor.h"
 #include "ofxFX.h"
+#include "ofxInteractiveViewPort.h"
+
 
 
 class controlImagenes{
@@ -58,6 +60,13 @@ public:
     void onCompleteMsg(float* arg);
     void cambiaFoto(ofEventArgs & args);
     void finTiempoPartida(ofEventArgs & args);
+    
+    void guardaPosiciones();
+    
+    ofxInteractiveViewPort viewportImagen, viewportAciertos, viewportMascara, viewportCoru, viewportCadiz, viewportTiempo;
+    ofFbo fboImagen, fboAciertos, fboMascara, fboCou, fboCadiz, fboTiempo;
+    
+
 };
 
 #endif

@@ -4,6 +4,7 @@
 
 //non core addons
 #include "controlImagenes.h"
+#include "ofxGui.h"
 
 class testApp : public ofBaseApp{
 
@@ -21,7 +22,17 @@ class testApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+    
+        void btnGuiCoru(bool & pressed);
+        void btnGuiCadiz(bool & pressed);
+        void btnGuiAciertos(bool & pressed);
+        void btnGuiMascara(bool & pressed);
+        void btnGuiTiempo(bool & pressed);
 		
 	controlImagenes * partida;
+    
+    ofxPanel gui;
+    ofxToggle vImagenOn, vAciertosOn, vMascaraOn, vCoruOn, vCadizOn, vTiempoOn;
+    bool verGui;
     
 };
