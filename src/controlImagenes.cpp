@@ -220,18 +220,6 @@ void controlImagenes::draw(){
     /// display del marcador de tiempo de la foto
     fichas.at(indexFicha)->draw();
     
-    
-    
-    /// debug de mascara
-    //mascaraVideo.draw(850, 0,320,240);
-    
-    
-
-    
-    
-
-    
-    
 
     
     if(mensaje){

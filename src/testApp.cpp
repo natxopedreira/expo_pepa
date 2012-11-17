@@ -19,20 +19,23 @@ void testApp::update(){
 
 void testApp::draw(){
     
-    if(partida && !partida->partidaTerminada){
-      partida->draw();   
-    }else if(partida && partida->partidaTerminada){
-      // esta en reposo sin ningun user
-      ofDrawBitmapStringHighlight("PARTIDA TERMINADA "+ofToString(partida->puntos), 500, 350);
+    if(partida){
+        if(!partida->partidaTerminada){
+            partida->draw();
+        }else{
+            ofDrawBitmapStringHighlight("PARTIDA TERMINADA "+ofToString(partida->puntos), 500, 350);
+        }
+            
     }else{
-    
-        ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 500, 350);
+         ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 500, 350);
     }
     
     if(verGui) gui.draw();
     
     //ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), 10, 10);
 }
+
+
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
