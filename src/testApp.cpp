@@ -13,13 +13,13 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
-   if(partida) partida->update();
+   if(partida != NULL) partida->update();
 }
 
 
 void testApp::draw(){
     
-    if(partida){
+    if(partida != NULL){
         if(!partida->partidaTerminada){
             partida->draw();
         }else{
@@ -47,7 +47,7 @@ void testApp::keyPressed(int key){
             break;
             
         case 'd':
-            if(partida){
+            if(partida != NULL){
                 delete partida;
                 partida = NULL;
                 partida = new controlImagenes();
@@ -101,53 +101,53 @@ void testApp::setupGui(){
 
 //--------------------------------------------------------------
 void testApp::btnGuiCoru(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportCoru.bEditMode = pressed;
 }
 //--------------------------------------------------------------
 void testApp::btnGuiCadiz(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportCadiz.bEditMode = pressed;
 }
 //--------------------------------------------------------------
 void testApp::btnGuiAciertos(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportAciertos.bEditMode = pressed;
 }
 //--------------------------------------------------------------
 void testApp::btnGuiMascara(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportMascara.bEditMode = pressed;
 }
 //--------------------------------------------------------------
 void testApp::btnGuiTiempo(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportTiempo.bEditMode = pressed;
 }
 
 //--------------------------------------------------------------
 void testApp::btnGuiCoruMask(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportCoru.bEditMask = pressed;
 }
 //--------------------------------------------------------------
 void testApp::btnGuiCadizMask(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportCadiz.bEditMask = pressed;
 }
 //--------------------------------------------------------------
 void testApp::btnGuiAciertosMask(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportAciertos.bEditMask = pressed;
 }
 //--------------------------------------------------------------
 void testApp::btnGuiMascaraMask(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportMascara.bEditMask = pressed;
 }
 //--------------------------------------------------------------
 void testApp::btnGuiTiempoMask(bool & pressed){
-    if(!partida) return;
+    if(partida == NULL) return;
     partida->viewportTiempo.bEditMask = pressed;
 }
 //--------------------------------------------------------------

@@ -15,7 +15,8 @@ void controlImagenes::setup(){
     /// video que usaremos para enmascarar
     mascaraVideo.setPixelFormat(OF_PIXELS_RGB);
    
-    mascaraVideo.loadMovie("Comp 1.mp4", OF_QTKIT_DECODE_PIXELS_AND_TEXTURE);
+    mascaraVideo.loadMovie("mascara.mov", OF_QTKIT_DECODE_PIXELS_AND_TEXTURE);
+    mascaraVideo.setLoopState(OF_LOOP_NONE);
     mascaraVideo.play();
     // mascaraVideo.setPosition(0.01);
     
