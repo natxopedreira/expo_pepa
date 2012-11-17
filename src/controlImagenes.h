@@ -12,7 +12,6 @@
 #include "ofMain.h"
 #include "imagenJuego.h"
 #include "boton.h"
-#include "utilidadesDraw.h"
 
 //non core addons
 #include "ofxTweenzor.h"

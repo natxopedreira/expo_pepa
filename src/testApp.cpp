@@ -49,6 +49,7 @@ void testApp::keyPressed(int key){
         case 'd':
             if(partida){
                 delete partida;
+                partida = NULL;
                 partida = new controlImagenes();
                 partida->setup();
             }

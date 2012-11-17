@@ -13,8 +13,11 @@ void controlImagenes::setup(){
     Tweenzor::init();
     
     /// video que usaremos para enmascarar
+    mascaraVideo.setPixelFormat(OF_PIXELS_RGB);
+   
     mascaraVideo.loadMovie("Comp 1.mp4", OF_QTKIT_DECODE_PIXELS_AND_TEXTURE);
-    mascaraVideo.setPosition(0.01);
+    mascaraVideo.play();
+    // mascaraVideo.setPosition(0.01);
     
     mascara.allocate(800, 600);
     
@@ -125,12 +128,13 @@ void controlImagenes::cargaFichas(){
 
 //--------------------------------------------------------------
 void controlImagenes::update(){
+    mascaraVideo.update();
     
     Tweenzor::update( ofGetElapsedTimeMillis() );
     
     ofSoundUpdate();
     
-    mascaraVideo.update();
+    
     fichas.at(indexFicha)->update();
     
     mascara.begin(0);
@@ -171,6 +175,12 @@ void controlImagenes::update(){
         float minutos = tiempoPartida.getTimeLeftInSeconds()/60;
         string segundos = ofToString(minutos);
         vector<string> splitItems = ofSplitString(segundos, ".");
+        if(splitItems.size()>0){
+            
+            
+            
+        }
+        
         float segs = ofToFloat("0."+splitItems[1]);
         float segsmins = segs*60;
         string mensajeTiempo = ofToString((int)segsmins);
