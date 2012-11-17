@@ -51,7 +51,7 @@ public:
     void configViewPorts();
     void update();
     void draw();
-    void resetPartida();
+    void iniciaPartida();
     void renderViewports();
     
     void cargaFichas();

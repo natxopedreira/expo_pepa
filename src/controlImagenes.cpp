@@ -18,11 +18,8 @@ void controlImagenes::setup(){
     mascaraVideo.loadMovie("mascara.mov", OF_QTKIT_DECODE_PIXELS_AND_TEXTURE);
     mascaraVideo.setLoopState(OF_LOOP_NONE);
     mascaraVideo.play();
-    // mascaraVideo.setPosition(0.01);
     
     mascara.allocate(800, 600);
-    
-    
 
     /// botones para seleccioar ciudad
     botonCoruna.setup(10, 20, "coru", "btn/coru.png");
@@ -35,9 +32,9 @@ void controlImagenes::setup(){
     sndAcierto.loadSound("Temple.aiff");
     sndFallo.loadSound("Wild Eep.aiff");
     
-    fuenteMarcador.loadFont("GothamRounded-Book.otf", 108, true, true);
-    fuenteLeyenda.loadFont("GothamRounded-Book.otf", 14, true, true);
-    fuenteAlerta.loadFont("GothamRounded-Book.otf", 50, true, true);
+    fuenteMarcador.loadFont("BodoniXT.ttf", 130);
+    fuenteLeyenda.loadFont("BodoniXT.ttf", 30);
+    fuenteAlerta.loadFont("BodoniXT.ttf", 70);
     
     /// timer para la partida, 2 minutos
     tiempoPartida.setup(450000, false); // iniciamos el timer
@@ -54,7 +51,7 @@ void controlImagenes::setup(){
     configViewPorts();
     
     
-    resetPartida();
+    iniciaPartida();
 
 }
 
@@ -123,6 +120,7 @@ void controlImagenes::update(){
 //--------------------------------------------------------------
 void controlImagenes::draw(){
     viewportMascara.draw(mascara.getTextureReference());
+    
     viewportAciertos.draw(fboAciertos.getTextureReference());
     viewportTiempo.draw(fboTiempo.getTextureReference());
     viewportCoru.draw(fboCou.getTextureReference());
@@ -132,7 +130,7 @@ void controlImagenes::draw(){
         ofPushStyle();
         // acabas de pulsar una opcion y esto dice ok o fallo
         ofSetColor(255, 255, 255, alphaMsjStr);
-        fuenteAlerta.drawString(ofToString(mensajeStr), 300, 280);
+        fuenteAlerta.drawString(ofToString(mensajeStr), 200, 280);
         
         ofPopStyle();
     }
@@ -146,7 +144,7 @@ void controlImagenes::renderViewports(){
     ofSetColor(255,255,255);
     /// estos son tus puntos
     /// mejor siempre dos digitos
-    fuenteLeyenda.drawString("su puntuacion", 0, 20);
+    fuenteLeyenda.drawString("aciertos", 20, 190);
     if(puntos<10){
         fuenteMarcador.drawString("0"+ofToString(puntos), 0, 150);
     }else{
@@ -161,21 +159,20 @@ void controlImagenes::renderViewports(){
     ofSetColor(255,255,255);
     // marcador de tiempo restante
     if(!partidaTerminada){
-        fuenteLeyenda.drawString("tiempo restante", 0, 20);
         float minutos = tiempoPartida.getTimeLeftInSeconds()/60;
         string segundos = ofToString(minutos);
         vector<string> splitItems = ofSplitString(segundos, ".");
         if(splitItems.size()>0){
             
-            
+            float segs = ofToFloat("0."+splitItems[1]);
+            float segsmins = segs*60;
+            string mensajeTiempo = ofToString((int)segsmins);
+            //if(mensajeTiempo.length()==1) mensajeTiempo = "0"+mensajeTiempo;
+            fuenteMarcador.drawString(splitItems[0]+":"+mensajeTiempo, 0, 150);
             
         }
         
-        float segs = ofToFloat("0."+splitItems[1]);
-        float segsmins = segs*60;
-        string mensajeTiempo = ofToString((int)segsmins);
-        if(mensajeTiempo.length()==1) mensajeTiempo = "0"+mensajeTiempo;
-        fuenteMarcador.drawString(splitItems[0]+":"+mensajeTiempo, 0, 150);
+
     }
     fboTiempo.end();
     
@@ -239,7 +236,7 @@ void controlImagenes::configViewPorts(){
 }
 
 //--------------------------------------------------------------
-void controlImagenes::resetPartida(){
+void controlImagenes::iniciaPartida(){
     puntos = 0;
     indexFicha = 0;
     alphaBotones = 0;

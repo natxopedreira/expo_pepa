@@ -50,7 +50,7 @@ void testApp::keyPressed(int key){
             
         case 'd':
             if(juegoEmpezado){
-                partida->resetPartida();
+                partida->iniciaPartida();
             }
             break; 
 
