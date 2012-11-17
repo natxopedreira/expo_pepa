@@ -25,8 +25,11 @@ void testApp::draw(){
             partida->draw();
         }else{
             ofDrawBitmapStringHighlight("PARTIDA TERMINADA "+ofToString(partida->puntos), 500, 350);
+            /// para hacer  un loop y que se pruebe sola
+            if(juegoEmpezado){
+                partida->iniciaPartida();
+            }
         }
-            
     }else{
          ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 500, 350);
     }
@@ -163,12 +166,3 @@ void testApp::mousePressed(int x, int y, int button){}
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button){}
-
-//--------------------------------------------------------------
-void testApp::windowResized(int w, int h){}
-
-//--------------------------------------------------------------
-void testApp::gotMessage(ofMessage msg){}
-
-//--------------------------------------------------------------
-void testApp::dragEvent(ofDragInfo dragInfo){}

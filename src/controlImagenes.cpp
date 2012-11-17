@@ -37,8 +37,8 @@ void controlImagenes::setup(){
     fuenteAlerta.loadFont("BodoniXT.ttf", 70);
     
     /// timer para la partida, 2 minutos
-    tiempoPartida.setup(450000, false); // iniciamos el timer
-    tiempoPartida.startTimer();
+    tiempoPartida.setup(480000, false); // iniciamos el timer
+    
     
     /// timer para el paso entre fotos
     tiempoEntreFoto.setup(1500, false); // iniciamos el timer
@@ -47,11 +47,11 @@ void controlImagenes::setup(){
     ofAddListener(tiempoEntreFoto.TIMER_REACHED, this, &controlImagenes::cambiaFoto);
     ofAddListener(tiempoPartida.TIMER_REACHED, this, &controlImagenes::finTiempoPartida);
     
-    cargaFichas();
-    configViewPorts();
+    cargaFichas(); // creamos el vector con las imagenes
     
+    configViewPorts(); // cargamos los fbos para los viewports
     
-    iniciaPartida();
+    iniciaPartida(); // setea vars y lanza fichas
 
 }
 
@@ -90,13 +90,14 @@ void controlImagenes::update(){
     
     if(mascaraVideo.isFrameNew()){
         //si el frame del video es nuevo update la mascara
+        
         mascara.begin(0);
-        mascaraVideo.draw(-20, -35, 800,700);
+            mascaraVideo.draw(-20, -35, 800,700);
         mascara.end(0);
         
         mascara.begin(1);
-        ofSetColor(255,255,255);
-        fichas.at(indexFicha)->imagen.draw(80, 60);
+            ofSetColor(255,255,255);
+            fichas.at(indexFicha)->imagen.draw(80, 60);
         mascara.end(1);
     
         mascara.update();
@@ -119,8 +120,8 @@ void controlImagenes::update(){
 
 //--------------------------------------------------------------
 void controlImagenes::draw(){
+    /// cada cosa sale en un viewport con mapping y mascara
     viewportMascara.draw(mascara.getTextureReference());
-    
     viewportAciertos.draw(fboAciertos.getTextureReference());
     viewportTiempo.draw(fboTiempo.getTextureReference());
     viewportCoru.draw(fboCou.getTextureReference());
@@ -159,40 +160,34 @@ void controlImagenes::renderViewports(){
     ofSetColor(255,255,255);
     // marcador de tiempo restante
     if(!partidaTerminada){
-        float minutos = tiempoPartida.getTimeLeftInSeconds()/60;
-        string segundos = ofToString(minutos);
-        vector<string> splitItems = ofSplitString(segundos, ".");
-        if(splitItems.size()>0){
-            
-            float segs = ofToFloat("0."+splitItems[1]);
-            float segsmins = segs*60;
-            string mensajeTiempo = ofToString((int)segsmins);
-            //if(mensajeTiempo.length()==1) mensajeTiempo = "0"+mensajeTiempo;
-            fuenteMarcador.drawString(splitItems[0]+":"+mensajeTiempo, 0, 150);
-            
-        }
+        int minutos = (int)tiempoPartida.getTimeLeftInSeconds()/60;
+        int segundos = (int)tiempoPartida.getTimeLeftInSeconds() % 60;
         
-
+        if(segundos<10){
+            fuenteMarcador.drawString(ofToString(minutos)+":0"+ofToString(segundos), 0, 150);
+        }else{
+            fuenteMarcador.drawString(ofToString(minutos)+":"+ofToString(segundos), 0, 150);
+        }
     }
     fboTiempo.end();
     
     
     fboCou.begin();
-    ofClear(0);
-    /// botones de seleccion de ciudad
-    ofPushStyle();
-    ofSetColor(255,255,255,alphaBotones);
-    botonCoruna.draw();
-    ofPopStyle();
+        ofClear(0);
+        /// botones de seleccion de ciudad
+        ofPushStyle();
+        ofSetColor(255,255,255,alphaBotones);
+        botonCoruna.draw();
+        ofPopStyle();
     fboCou.end();  
     
     fboCadiz.begin();
-    ofClear(0);
-    /// botones de seleccion de ciudad
-    ofPushStyle();
-    ofSetColor(255,255,255,alphaBotones);
-    botonCadiz.draw();
-    ofPopStyle();
+        ofClear(0);
+        /// botones de seleccion de ciudad
+        ofPushStyle();
+        ofSetColor(255,255,255,alphaBotones);
+        botonCadiz.draw();
+        ofPopStyle();
     fboCadiz.end(); 
 
 }
@@ -249,6 +244,8 @@ void controlImagenes::iniciaPartida(){
     tiempoEntreFoto.reset();
     
     lanzaFicha();
+    
+    tiempoPartida.startTimer();
 }
 
 //--------------------------------------------------------------
@@ -312,9 +309,8 @@ void controlImagenes::onCompleteMsg(float* arg) {
         sndFallo.play();
     }
     tiempoEntreFoto.startTimer();
-    
-    
 }
+//--------------------------------------------------------------
 void controlImagenes::guardaPosiciones(){
     viewportImagen.saveSettings();
     viewportAciertos.saveSettings();
