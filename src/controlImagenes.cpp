@@ -35,12 +35,12 @@ void controlImagenes::setup(){
     sndAcierto.loadSound("Temple.aiff");
     sndFallo.loadSound("Wild Eep.aiff");
     
-    fuenteMarcador.loadFont("GothamRounded-Book.otf", 108);
-    fuenteLeyenda.loadFont("GothamRounded-Book.otf", 14);
-    fuenteAlerta.loadFont("GothamRounded-Book.otf", 50);
+    fuenteMarcador.loadFont("GothamRounded-Book.otf", 108, true, true);
+    fuenteLeyenda.loadFont("GothamRounded-Book.otf", 14, true, true);
+    fuenteAlerta.loadFont("GothamRounded-Book.otf", 50, true, true);
     
     /// timer para la partida, 2 minutos
-    tiempoPartida.setup(12000, false); // iniciamos el timer
+    tiempoPartida.setup(120000, false); // iniciamos el timer
     tiempoPartida.startTimer();
     
     mensaje = false;
@@ -138,6 +138,7 @@ void controlImagenes::update(){
     mascara.end(0);
     
     mascara.begin(1);
+    ofSetColor(255,255,255);
     fichas.at(indexFicha)->imagen.draw(80, 60);
     mascara.end(1);
     
@@ -173,6 +174,7 @@ void controlImagenes::update(){
         float segs = ofToFloat("0."+splitItems[1]);
         float segsmins = segs*60;
         string mensajeTiempo = ofToString((int)segsmins);
+        if(mensajeTiempo.length()==1) mensajeTiempo = "0"+mensajeTiempo;
         fuenteMarcador.drawString(splitItems[0]+":"+mensajeTiempo, 0, 150);
     }
     fboTiempo.end();

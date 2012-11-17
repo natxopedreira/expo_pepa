@@ -23,16 +23,25 @@ class testApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
+        void setupGui();
+    
         void btnGuiCoru(bool & pressed);
         void btnGuiCadiz(bool & pressed);
         void btnGuiAciertos(bool & pressed);
         void btnGuiMascara(bool & pressed);
         void btnGuiTiempo(bool & pressed);
+    
+        void btnGuiCoruMask(bool & pressed);
+        void btnGuiCadizMask(bool & pressed);
+        void btnGuiAciertosMask(bool & pressed);
+        void btnGuiMascaraMask(bool & pressed);
+        void btnGuiTiempoMask(bool & pressed);
 		
 	controlImagenes * partida;
     
     ofxPanel gui;
     ofxToggle vImagenOn, vAciertosOn, vMascaraOn, vCoruOn, vCadizOn, vTiempoOn;
+    ofxToggle maskImagenOn, maskAciertosOn, maskMascaraOn, maskCoruOn, maskCadizOn, maskTiempoOn;
     bool verGui;
     
 };
