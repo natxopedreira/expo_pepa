@@ -7,19 +7,20 @@ void testApp::setup(){
     ofBackground(0, 0, 0);
     
     partida = NULL;
+    juegoEmpezado = false;
     
     setupGui();
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-   if(partida != NULL) partida->update();
+   if(juegoEmpezado) partida->update();
 }
 
 
 void testApp::draw(){
     
-    if(partida != NULL){
+    if(juegoEmpezado){
         if(!partida->partidaTerminada){
             partida->draw();
         }else{
@@ -44,14 +45,12 @@ void testApp::keyPressed(int key){
         case 'n':
             partida = new controlImagenes();
             partida->setup();
+            juegoEmpezado = true;
             break;
             
         case 'd':
-            if(partida != NULL){
-                delete partida;
-                partida = NULL;
-                partida = new controlImagenes();
-                partida->setup();
+            if(juegoEmpezado){
+                partida->resetPartida();
             }
             break; 
 

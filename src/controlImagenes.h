@@ -17,7 +17,7 @@
 #include "ofxTweenzor.h"
 #include "ofxFX.h"
 #include "ofxInteractiveViewPort.h"
-
+#include "ofxTimer.h"
 
 
 class controlImagenes{
@@ -26,11 +26,12 @@ public:
     ofxMask mascara;
     ofQTKitPlayer mascaraVideo;
     ofxTimer tiempoPartida;
+    ofxTimer tiempoEntreFoto;
     ofTrueTypeFont fuenteMarcador;
     ofTrueTypeFont fuenteLeyenda;
     ofTrueTypeFont fuenteAlerta;
     ofSoundPlayer  sndAcierto, sndFallo;
-    ofxTimer tiempoEntreFoto;
+    
     
     vector<imagenJuego*> fichas;
     
@@ -47,13 +48,15 @@ public:
     boton botonCadiz;
     
     void setup();
+    void configViewPorts();
     void update();
     void draw();
+    void resetPartida();
+    void renderViewports();
     
     void cargaFichas();
     void lanzaFicha();
     void botonCiudad(string & s);
-    void pacman(int resolution, float radius, float loaded, int px, int py);
     
     void mensajeRespuesta(string s);
     void onCompleteMsg(float* arg);

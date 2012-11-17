@@ -22,12 +22,8 @@ void controlImagenes::setup(){
     
     mascara.allocate(800, 600);
     
-    cargaFichas();
-
-    puntos = 0;
-    indexFicha = 0;
-    alphaBotones = 0;
     
+
     /// botones para seleccioar ciudad
     botonCoruna.setup(10, 20, "coru", "btn/coru.png");
     botonCadiz.setup(10, 20, "cadiz", "btn/cadiz.png");
@@ -44,13 +40,8 @@ void controlImagenes::setup(){
     fuenteAlerta.loadFont("GothamRounded-Book.otf", 50, true, true);
     
     /// timer para la partida, 2 minutos
-    tiempoPartida.setup(120000, false); // iniciamos el timer
+    tiempoPartida.setup(450000, false); // iniciamos el timer
     tiempoPartida.startTimer();
-    
-    mensaje = false;
-    alphaMsjStr = 0;
-    scaleMsjStr = 0;
-    
     
     /// timer para el paso entre fotos
     tiempoEntreFoto.setup(1500, false); // iniciamos el timer
@@ -59,48 +50,12 @@ void controlImagenes::setup(){
     ofAddListener(tiempoEntreFoto.TIMER_REACHED, this, &controlImagenes::cambiaFoto);
     ofAddListener(tiempoPartida.TIMER_REACHED, this, &controlImagenes::finTiempoPartida);
     
-    partidaTerminada = false;
+    cargaFichas();
+    configViewPorts();
     
-    lanzaFicha();
     
-    /*
-    ofxInteractiveViewPort viewportImagen, viewportAciertos, viewportMascara, viewportCoru, viewportCadiz, viewportTiempo;
-    ofFbo fboImagen, fboAciertos, fboMascara, fboCou, fboCadiz, fboTiempo;
-     */
-    fboMascara.allocate(800, 600);
-    fboImagen.allocate(640, 480);
-    fboAciertos.allocate(320, 240);
-    fboCou.allocate(320, 240);
-    fboCadiz.allocate(320, 240);
-    fboTiempo.allocate(320, 240);
+    resetPartida();
 
-    
-    fboImagen.begin();
-    ofClear(0);
-    fboImagen.end(); 
-    
-    fboAciertos.begin();
-    ofClear(0);
-    fboAciertos.end(); 
-    
-    fboCou.begin();
-    ofClear(0);
-    fboCou.end();  
-    
-    fboCadiz.begin();
-    ofClear(0);
-    fboCadiz.end(); 
-    
-    fboTiempo.begin();
-    ofClear(0);
-    fboTiempo.end();
-    
-    viewportImagen.loadSettings(0);
-    viewportAciertos.loadSettings(1);
-    viewportMascara.loadSettings(2);
-    viewportCoru.loadSettings(3);
-    viewportCadiz.loadSettings(4);
-    viewportTiempo.loadSettings(5);
 }
 
 //--------------------------------------------------------------
@@ -130,27 +85,61 @@ void controlImagenes::cargaFichas(){
 //--------------------------------------------------------------
 void controlImagenes::update(){
     mascaraVideo.update();
-    
     Tweenzor::update( ofGetElapsedTimeMillis() );
-    
     ofSoundUpdate();
-    
     
     fichas.at(indexFicha)->update();
     
-    mascara.begin(0);
-    mascaraVideo.draw(-20, -35, 800,700);
-    mascara.end(0);
     
-    mascara.begin(1);
-    ofSetColor(255,255,255);
-    fichas.at(indexFicha)->imagen.draw(80, 60);
-    mascara.end(1);
+    if(mascaraVideo.isFrameNew()){
+        //si el frame del video es nuevo update la mascara
+        mascara.begin(0);
+        mascaraVideo.draw(-20, -35, 800,700);
+        mascara.end(0);
+        
+        mascara.begin(1);
+        ofSetColor(255,255,255);
+        fichas.at(indexFicha)->imagen.draw(80, 60);
+        mascara.end(1);
     
-    mascara.update();
+        mascara.update();
+    }
+
+    ///// renderizas los fbos para dar de comer a los viewports
+    renderViewports();
+    
+    
+    botonCoruna.screenPosx = viewportCoru.getPos().x-(viewportCoru.getWidth()/2);
+    botonCoruna.screenPosy = viewportCoru.getPos().y-(viewportCoru.getHeight()/2);
+    
+    botonCadiz.screenPosx = viewportCadiz.getPos().x-(viewportCadiz.getWidth()/2);
+    botonCadiz.screenPosy = viewportCadiz.getPos().y-(viewportCadiz.getHeight()/2);
+    
     
     botonCoruna.update();
     botonCadiz.update();
+}
+
+//--------------------------------------------------------------
+void controlImagenes::draw(){
+    viewportMascara.draw(mascara.getTextureReference());
+    viewportAciertos.draw(fboAciertos.getTextureReference());
+    viewportTiempo.draw(fboTiempo.getTextureReference());
+    viewportCoru.draw(fboCou.getTextureReference());
+    viewportCadiz.draw(fboCadiz.getTextureReference());
+    
+    if(mensaje){
+        ofPushStyle();
+        // acabas de pulsar una opcion y esto dice ok o fallo
+        ofSetColor(255, 255, 255, alphaMsjStr);
+        fuenteAlerta.drawString(ofToString(mensajeStr), 300, 280);
+        
+        ofPopStyle();
+    }
+}
+//--------------------------------------------------------------
+void controlImagenes::renderViewports(){
+    
     
     fboAciertos.begin();
     ofClear(0);
@@ -166,7 +155,7 @@ void controlImagenes::update(){
     
     fboAciertos.end(); 
     
-
+    
     fboTiempo.begin();
     ofClear(0);
     ofSetColor(255,255,255);
@@ -208,39 +197,61 @@ void controlImagenes::update(){
     botonCadiz.draw();
     ofPopStyle();
     fboCadiz.end(); 
-    
-    
-    botonCoruna.screenPosx = viewportCoru.getPos().x-(viewportCoru.getWidth()/2);
-    botonCoruna.screenPosy = viewportCoru.getPos().y-(viewportCoru.getHeight()/2);
-    
-    botonCadiz.screenPosx = viewportCadiz.getPos().x-(viewportCadiz.getWidth()/2);
-    botonCadiz.screenPosy = viewportCadiz.getPos().y-(viewportCadiz.getHeight()/2);
+
 }
 
 //--------------------------------------------------------------
-void controlImagenes::draw(){
-    viewportMascara.draw(mascara.getTextureReference());
-    viewportAciertos.draw(fboAciertos.getTextureReference());
-    viewportTiempo.draw(fboTiempo.getTextureReference());
-    viewportCoru.draw(fboCou.getTextureReference());
-    viewportCadiz.draw(fboCadiz.getTextureReference());
-    //mascara.draw();
+void controlImagenes::configViewPorts(){
+    fboMascara.allocate(800, 600);
+    fboImagen.allocate(640, 480);
+    fboAciertos.allocate(320, 240);
+    fboCou.allocate(320, 240);
+    fboCadiz.allocate(320, 240);
+    fboTiempo.allocate(320, 240);
     
+    
+    fboImagen.begin();
+    ofClear(0);
+    fboImagen.end(); 
+    
+    fboAciertos.begin();
+    ofClear(0);
+    fboAciertos.end(); 
+    
+    fboCou.begin();
+    ofClear(0);
+    fboCou.end();  
+    
+    fboCadiz.begin();
+    ofClear(0);
+    fboCadiz.end(); 
+    
+    fboTiempo.begin();
+    ofClear(0);
+    fboTiempo.end();
+    
+    viewportImagen.loadSettings(0);
+    viewportAciertos.loadSettings(1);
+    viewportMascara.loadSettings(2);
+    viewportCoru.loadSettings(3);
+    viewportCadiz.loadSettings(4);
+    viewportTiempo.loadSettings(5);
+}
 
+//--------------------------------------------------------------
+void controlImagenes::resetPartida(){
+    puntos = 0;
+    indexFicha = 0;
+    alphaBotones = 0;
+    partidaTerminada = false;
+    mensaje = false;
+    alphaMsjStr = 0;
+    scaleMsjStr = 0;
     
-    /// display del marcador de tiempo de la foto
-    fichas.at(indexFicha)->draw();
+    tiempoPartida.reset();
+    tiempoEntreFoto.reset();
     
-
-    
-    if(mensaje){
-        ofPushStyle();
-        // acabas de pulsar una opcion y esto dice ok o fallo
-        ofSetColor(255, 255, 255, alphaMsjStr);
-        fuenteAlerta.drawString(ofToString(mensajeStr), 300, 280);
-        
-        ofPopStyle();
-    }
+    lanzaFicha();
 }
 
 //--------------------------------------------------------------
@@ -256,9 +267,6 @@ void controlImagenes::lanzaFicha(){
     
     mascaraVideo.setPosition(0.01);
     mascaraVideo.play();
-    
-    fichas.at(indexFicha)->temporizador.reset();
-    fichas.at(indexFicha)->temporizador.startTimer();
     
     Tweenzor::add(&alphaBotones, 0, 255, 0.5f, 3.f,EASE_IN_OUT_SINE);
     
@@ -280,13 +288,11 @@ void controlImagenes::botonCiudad(string & s){
     botonCadiz.activo = false;
 
     if(mascaraVideo.isPlaying()) mascaraVideo.setPaused(true);
-    fichas.at(indexFicha)->temporizador.pauseTimer();
     
     // comprobamos si es correcto o no TODO
     if(fichas.at(indexFicha)->ciudad == s){
         // sumamos los ptos si has acertado
-        // cout << "sumas " <<  fichas.at(indexFicha)->ptos << " ptos." << endl;
-        puntos += fichas.at(indexFicha)->ptos;
+        puntos ++;
         mensajeRespuesta("correcto");
     }else{
         mensajeRespuesta("error");

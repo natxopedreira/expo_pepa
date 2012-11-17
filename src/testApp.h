@@ -36,6 +36,8 @@ class testApp : public ofBaseApp{
         void btnGuiAciertosMask(bool & pressed);
         void btnGuiMascaraMask(bool & pressed);
         void btnGuiTiempoMask(bool & pressed);
+    
+        bool juegoEmpezado;
 		
 	controlImagenes * partida;
     
