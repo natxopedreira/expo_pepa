@@ -21,9 +21,6 @@ void juegoFichas::setup(){
     
     mascara.allocate(800, 600);
 
-    /// botones para seleccioar ciudad
-    botonCoruna.setup(10, 20, "coru", "btn/coru.png");
-    botonCadiz.setup(10, 20, "cadiz", "btn/cadiz.png");
 
     ofAddListener(botonCoruna.seleccionBoton, this,  &juegoFichas::botonCiudad);
     ofAddListener(botonCadiz.seleccionBoton, this,  &juegoFichas::botonCiudad);
@@ -33,9 +30,13 @@ void juegoFichas::setup(){
     sndFallo.loadSound("Wild Eep.aiff");
     
     fuenteMarcador.loadFont("BodoniXT.ttf", 130);
-    fuenteLeyenda.loadFont("BodoniXT.ttf", 30);
+    fuenteLeyenda.loadFont("BodoniXT.ttf", 40, true, true);
     fuenteAlerta.loadFont("BodoniXT.ttf", 70);
     
+    
+    /// botones para seleccioar ciudad
+    botonCoruna.setup(40, 40, "coru", "btn/coru.png", "¿a coruña?", fuenteLeyenda);
+    botonCadiz.setup(40, 40, "cadiz", "btn/cadiz.png", "¿cadiz?", fuenteLeyenda);    
     
     /// timer para la partida, 2 minutos
     tiempoPartida.setup(480000, false); // iniciamos el timer
@@ -81,6 +82,7 @@ void juegoFichas::cargaFichas(){
     fichas.push_back(ficha2);
     fichas.push_back(ficha3);
 
+    
 }
 
 //--------------------------------------------------------------
@@ -136,12 +138,15 @@ void juegoFichas::update(){
             ///// renderizas los fbos para dar de comer a los viewports
             renderViewports();
             
-            
             botonCoruna.screenPosx = viewportCoru.getPos().x-(viewportCoru.getWidth()/2);
             botonCoruna.screenPosy = viewportCoru.getPos().y-(viewportCoru.getHeight()/2);
+            botonCoruna.ancho = viewportCadiz.getWidth();
+            botonCoruna.alto = viewportCadiz.getHeight();
             
             botonCadiz.screenPosx = viewportCadiz.getPos().x-(viewportCadiz.getWidth()/2);
             botonCadiz.screenPosy = viewportCadiz.getPos().y-(viewportCadiz.getHeight()/2);
+            botonCadiz.ancho = viewportCadiz.getWidth();
+            botonCadiz.alto = viewportCadiz.getHeight();
             
             
             botonCoruna.render();
@@ -175,9 +180,13 @@ void juegoFichas::draw(){
             viewportTiempo.draw(fboTiempo.getTextureReference());
             
             ofPushStyle();
-            ofSetColor(255,255,255,alphaBotones);
+            
             viewportCoru.draw(botonCoruna.fbo.getTextureReference());
             viewportCadiz.draw(botonCadiz.fbo.getTextureReference());
+            ofSetColor(0,0,0,alphaBotones);
+            ofRect(viewportCadiz.getPos().x - viewportCadiz.getWidth()/2, viewportCadiz.getPos().y - viewportCadiz.getHeight()/2, viewportCadiz.getWidth(), viewportCadiz.getHeight());
+            
+            ofRect(viewportCoru.getPos().x - viewportCoru.getWidth()/2, viewportCoru.getPos().y - viewportCoru.getHeight()/2, viewportCoru.getWidth(), viewportCoru.getHeight());
             ofPopStyle();
             
             if(mensaje){
@@ -276,9 +285,12 @@ void juegoFichas::configViewPorts(){
 
 //--------------------------------------------------------------
 void juegoFichas::iniciaPartida(){
+    
+    std::random_shuffle(fichas.begin(), fichas.end());
+    
     puntos = 0;
     indexFicha = 0;
-    alphaBotones = 0;
+    alphaBotones = 255;
 
     mensaje = false;
     alphaMsjStr = 0;
@@ -298,7 +310,7 @@ void juegoFichas::iniciaPartida(){
 void juegoFichas::lanzaFicha(){
     /// lanzas una imagen
     
-    alphaBotones = 0;
+
     if(indexFicha<fichas.size()-1){
         indexFicha ++;
     }else{
@@ -308,7 +320,7 @@ void juegoFichas::lanzaFicha(){
     mascaraVideo.setPosition(0.01);
     mascaraVideo.play();
     
-    Tweenzor::add(&alphaBotones, 0, 255, 0.5f, 3.f,EASE_IN_OUT_SINE);
+    Tweenzor::add(&alphaBotones, 255, 0, 0.5f, 3.f,EASE_IN_OUT_SINE);
     
     botonCoruna.activo = true;
     botonCadiz.activo = true;

@@ -18,10 +18,12 @@ boton::boton(){
     screenPosy = 0;
     touchOver = false;
     activo = false;
+    fuente = NULL;
+    label = "";
 }
 
 //--------------------------------------------------------------
-void boton::setup(int _posx,int _posy, string _valor, string _url){
+void boton::setup(int _posx,int _posy, string _valor, string _url, string _label, ofTrueTypeFont & _fuente){
     posx = _posx;
     posy = _posy;
     valor = _valor;
@@ -30,14 +32,17 @@ void boton::setup(int _posx,int _posy, string _valor, string _url){
     ofAddListener(ofEvents().mouseReleased, this, &boton::mouseReleased);
     
     fondo.loadImage(_url);
-    ancho = fondo.getWidth();
-    alto = fondo.getHeight();
+    /*ancho = fondo.getWidth();
+    alto = fondo.getHeight();*/
     
     fbo.allocate(320,240);
     
     fbo.begin();
     ofClear(0);
     fbo.end();
+    
+    fuente = &_fuente;
+    label = _label;
 }
 
 //--------------------------------------------------------------
@@ -49,7 +54,8 @@ void boton::update(){
 void boton::render(){
     fbo.begin();
     ofClear(0);
-    fondo.draw(posx, posy);
+    fuente->drawString(label,posx, posy);
+    //fondo.draw(posx, posy);
     fbo.end();
 }
 

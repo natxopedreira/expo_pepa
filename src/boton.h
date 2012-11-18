@@ -19,14 +19,16 @@ public:
     bool touchOver;
     bool activo;
     string valor;
+    string label;
     
     ofImage fondo;
     ofEvent<string> seleccionBoton;
     ofFbo fbo;
+    ofTrueTypeFont * fuente;
     
 	boton();
 	
-	void setup(int _posx,int _posy, string _valor, string _url);
+	void setup(int _posx,int _posy, string _valor, string _url, string _label, ofTrueTypeFont & _fuente);
 	void update();
 	void render();
     
