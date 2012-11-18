@@ -39,7 +39,7 @@ void juegoFichas::setup(){
     botonCadiz.setup(40, 40, "cadiz", "btn/cadiz.png", "¿cadiz?", fuenteLeyenda);    
     
     /// timer para la partida, 2 minutos
-    tiempoPartida.setup(480000, false); // iniciamos el timer
+    tiempoPartida.setup(180000, false); // iniciamos el timer
     
     
     /// timer para el paso entre fotos
@@ -78,6 +78,8 @@ void juegoFichas::setup(){
 void juegoFichas::nuevoUsuario(){
     estadoPartida = ESTADO_NUEVO_USUARIO_NOMBRE;
     campoNombre.beginEditing();
+    campoMovil.text = "movil...";
+    campoNombre.text = "nombre...";
 }
 //--------------------------------------------------------------
 void juegoFichas::cargaFichas(){
@@ -351,8 +353,7 @@ void juegoFichas::iniciaPartida(){
     
     std::random_shuffle(fichas.begin(), fichas.end());
     
-    campoMovil.text = "movil...";
-    campoNombre.text = "nombre...";
+
     
     puntos = 0;
     indexFicha = 0;

@@ -31,7 +31,10 @@ void testApp::keyPressed(int key){
     
     switch (key) {
         case 'n':
-            partida->nuevoUsuario();
+            if(partida->estadoPartida == ESTADO_JUGANDO || partida->estadoPartida == ESTADO_REPOSO || partida->estadoPartida == ESTADO_PARTIDA_ACABADA){
+                partida->nuevoUsuario();
+            }
+            
             
             break;
              
@@ -151,6 +154,8 @@ void testApp::mousePressed(int x, int y, int button){
             partida->estadoPartida = ESTADO_NUEVO_USUARIO_MOVIL;
             partida->campoMovil.beginEditing();
         }else if (partida->estadoPartida == ESTADO_NUEVO_USUARIO_MOVIL) {
+            partida->campoMovil.endEditing();
+            partida->campoNombre.endEditing();
             partida->iniciaPartida();
         }
     }
