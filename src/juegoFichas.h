@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#ifndef CONTROL_IMAGEN
-#define CONTROL_IMAGEN
+#ifndef JUEGO_FICHAS
+#define JUEGO_FICHAS
 
 #include "ofMain.h"
 #include "imagenJuego.h"
@@ -18,6 +18,8 @@
 #include "ofxFX.h"
 #include "ofxInteractiveViewPort.h"
 #include "ofxTimer.h"
+#include "ofxTextInputField.h"
+
 
 enum EstadoPartida{
     ESTADO_REPOSO,
@@ -32,6 +34,8 @@ public:
     ofQTKitPlayer mascaraVideo;
     ofxTimer tiempoPartida;
     ofxTimer tiempoEntreFoto;
+    
+    
     ofTrueTypeFont fuenteMarcador;
     ofTrueTypeFont fuenteLeyenda;
     ofTrueTypeFont fuenteAlerta;

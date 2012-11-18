@@ -36,6 +36,7 @@ void juegoFichas::setup(){
     fuenteLeyenda.loadFont("BodoniXT.ttf", 30);
     fuenteAlerta.loadFont("BodoniXT.ttf", 70);
     
+    
     /// timer para la partida, 2 minutos
     tiempoPartida.setup(480000, false); // iniciamos el timer
     
@@ -92,7 +93,7 @@ void juegoFichas::update(){
             fboMensajes.begin();
             ofClear(0);
             ofSetColor(255, 255, 255, 255);
-            ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 80, 60);
+            fuenteAlerta.drawString("PULSA n PARA\nEMPEZAR\nA JUGAR", 0, 80);
             fboMensajes.end(); 
             
             break;
@@ -103,7 +104,7 @@ void juegoFichas::update(){
             fboMensajes.begin();
             ofClear(0);
             ofSetColor(255, 255, 255, 255);
-             ofDrawBitmapStringHighlight("PARTIDA TERMINADA "+ofToString(puntos), 80, 60);
+            fuenteAlerta.drawString("PARTIDA TERMINADA "+ofToString(puntos), 0, 80);
             fboMensajes.end(); 
             
             break;
@@ -143,8 +144,8 @@ void juegoFichas::update(){
             botonCadiz.screenPosy = viewportCadiz.getPos().y-(viewportCadiz.getHeight()/2);
             
             
-            botonCoruna.update();
-            botonCadiz.update();
+            botonCoruna.render();
+            botonCadiz.render();
             
             break;            
             
@@ -161,7 +162,7 @@ void juegoFichas::draw(){
     switch (estadoPartida) {
         case ESTADO_REPOSO:
             // EL JUEGO ESTA EN REPOSO = SIN USER
-            fboMensajes.draw(400, 300);
+            viewportMascara.draw(fboMensajes.getTextureReference());
             break;
             
             

@@ -42,20 +42,15 @@ void boton::setup(int _posx,int _posy, string _valor, string _url){
 
 //--------------------------------------------------------------
 void boton::update(){
+
+}
+
+//--------------------------------------------------------------
+void boton::render(){
     fbo.begin();
     ofClear(0);
     fondo.draw(posx, posy);
     fbo.end();
-}
-
-//--------------------------------------------------------------
-void boton::draw(){
-   // ofPushStyle();
-    //ofSetColor(255,255,255);
-    //if(touchOver) ofSetColor(255,0,0);
-    //fondo.draw(posx, posy);
-    //ofRect(posx, posy, ancho, alto);
-   // ofPopStyle();
 }
 
 //--------------------------------------------------------------

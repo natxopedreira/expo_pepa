@@ -26,8 +26,6 @@ void testApp::draw(){
     ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), 10, 10);
 }
 
-
-
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
     
@@ -51,6 +49,10 @@ void testApp::keyPressed(int key){
             break;
     }
 }
+
+
+
+
 void testApp::setupGui(){
     gui.setup();
     gui.add(vCoruOn.setup("area Coruna Editable", false));

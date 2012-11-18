@@ -28,7 +28,7 @@ public:
 	
 	void setup(int _posx,int _posy, string _valor, string _url);
 	void update();
-	void draw();
+	void render();
     
     
     bool isUnder(int px, int py);
