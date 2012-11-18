@@ -31,7 +31,7 @@ void testApp::keyPressed(int key){
     
     switch (key) {
         case 'n':
-            partida->iniciaPartida();
+            partida->nuevoUsuario();
             
             break;
              
@@ -50,6 +50,7 @@ void testApp::keyPressed(int key){
     }
 }
 
+//--------------------------------------------------------------
 
 
 
@@ -143,7 +144,18 @@ void testApp::mouseMoved(int x, int y ){}
 void testApp::mouseDragged(int x, int y, int button){}
 
 //--------------------------------------------------------------
-void testApp::mousePressed(int x, int y, int button){}
+void testApp::mousePressed(int x, int y, int button){
+
+    if(partida->viewportMascara.isOver(ofPoint(x, y))){
+        if(partida->estadoPartida == ESTADO_NUEVO_USUARIO_NOMBRE){
+            partida->estadoPartida = ESTADO_NUEVO_USUARIO_MOVIL;
+            partida->campoMovil.beginEditing();
+        }else if (partida->estadoPartida == ESTADO_NUEVO_USUARIO_MOVIL) {
+            partida->iniciaPartida();
+        }
+    }
+     
+}
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button){}

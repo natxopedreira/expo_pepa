@@ -32,7 +32,7 @@ void juegoFichas::setup(){
     fuenteMarcador.loadFont("BodoniXT.ttf", 130);
     fuenteLeyenda.loadFont("BodoniXT.ttf", 40, true, true);
     fuenteAlerta.loadFont("BodoniXT.ttf", 70);
-    
+    fuenteCampos.loadFont("BodoniXT.ttf", 30, true, true);
     
     /// botones para seleccioar ciudad
     botonCoruna.setup(40, 40, "coru", "btn/coru.png", "¿a coruña?", fuenteLeyenda);
@@ -57,9 +57,28 @@ void juegoFichas::setup(){
 
     estadoPartida = ESTADO_REPOSO;
     
-   
+    campoNombre.setup();
+    campoNombre.setFont(fuenteCampos);
+    campoNombre.bounds.x = 1;
+    campoNombre.bounds.y = 160;
+    campoNombre.bounds.width = 700;
+    campoNombre.bounds.height = 80;
+    campoNombre.text = "nombre...";
+    
+    campoMovil.setup();
+    campoMovil.setFont(fuenteCampos);
+    campoMovil.bounds.x = 1;
+    campoMovil.bounds.y = 160;
+    campoMovil.bounds.width = 700;
+    campoMovil.bounds.height = 80;
+    campoMovil.text = "movil...";
+    
 }
-
+//--------------------------------------------------------------
+void juegoFichas::nuevoUsuario(){
+    estadoPartida = ESTADO_NUEVO_USUARIO_NOMBRE;
+    campoNombre.beginEditing();
+}
 //--------------------------------------------------------------
 void juegoFichas::cargaFichas(){
     
@@ -81,14 +100,50 @@ void juegoFichas::cargaFichas(){
     fichas.push_back(ficha1);
     fichas.push_back(ficha2);
     fichas.push_back(ficha3);
-
-    
 }
 
 //--------------------------------------------------------------
 void juegoFichas::update(){
+Tweenzor::update( ofGetElapsedTimeMillis() );
     
     switch (estadoPartida) {
+        case ESTADO_NUEVO_USUARIO_NOMBRE:
+            // EL JUEGO ESTA EN REPOSO = SIN USER
+            
+            fboMensajes.begin();
+            
+            ofPushStyle();
+            ofClear(0);
+            ofSetColor(255);
+            fuenteCampos.drawString("Introduce tu nombre\ny pulsa la pantalla\npara continuar", 0, 30);
+            ofNoFill();
+            ofRect(campoNombre.bounds);
+            ofFill();
+            campoNombre.draw();
+            ofPopStyle();
+            
+            fboMensajes.end(); 
+            
+            break;
+        case ESTADO_NUEVO_USUARIO_MOVIL:
+            // EL JUEGO ESTA EN REPOSO = SIN USER
+            
+            fboMensajes.begin();
+            
+            ofPushStyle();
+            ofClear(0);
+            ofSetColor(255);
+            fuenteCampos.drawString("Introduce tu numero de movil\ny pulsa la pantalla\npara continuar", 0, 30);
+            ofNoFill();
+            ofRect(campoMovil.bounds);
+            ofFill();
+            campoMovil.draw(); 
+            ofPopStyle();
+            
+            fboMensajes.end(); 
+            
+            break;
+            
         case ESTADO_REPOSO:
             // EL JUEGO ESTA EN REPOSO = SIN USER
             
@@ -106,7 +161,7 @@ void juegoFichas::update(){
             fboMensajes.begin();
             ofClear(0);
             ofSetColor(255, 255, 255, 255);
-            fuenteAlerta.drawString("PARTIDA TERMINADA "+ofToString(puntos), 0, 80);
+            fuenteCampos.drawString(campoNombre.text+" PARTIDA TERMINADA "+ofToString(puntos), 0, 80);
             fboMensajes.end(); 
             
             break;
@@ -114,7 +169,7 @@ void juegoFichas::update(){
         case ESTADO_JUGANDO:
             // LA PARTIDA ESTA EN CURSO
             mascaraVideo.update();
-            Tweenzor::update( ofGetElapsedTimeMillis() );
+ 
             ofSoundUpdate();
             
             fichas.at(indexFicha)->update();
@@ -173,7 +228,7 @@ void juegoFichas::draw(){
             
         case ESTADO_JUGANDO:
             // LA PARTIDA ESTA EN CURSO
-            
+           
             /// cada cosa sale en un viewport con mapping y mascara
             viewportMascara.draw(mascara.getTextureReference());
             viewportAciertos.draw(fboAciertos.getTextureReference());
@@ -205,6 +260,16 @@ void juegoFichas::draw(){
             
             break;
             
+        case ESTADO_NUEVO_USUARIO_NOMBRE:
+            // NUEVO USER
+            viewportMascara.draw(fboMensajes.getTextureReference());
+            
+            break;
+        case ESTADO_NUEVO_USUARIO_MOVIL:
+            // NUEVO USER
+            viewportMascara.draw(fboMensajes.getTextureReference());
+            
+            break;  
         default:
             break;
     }
@@ -219,15 +284,13 @@ void juegoFichas::renderViewports(){
     fboAciertos.begin();
     ofClear(0);
     ofSetColor(255,255,255);
-    /// estos son tus puntos
-    /// mejor siempre dos digitos
+    /// estos son tus puntos - mejor siempre dos digitos
     fuenteLeyenda.drawString("aciertos", 20, 190);
     if(puntos<10){
         fuenteMarcador.drawString("0"+ofToString(puntos), 0, 150);
     }else{
         fuenteMarcador.drawString(ofToString(puntos), 0, 150);
     }
-    
     fboAciertos.end(); 
     
     
@@ -288,9 +351,13 @@ void juegoFichas::iniciaPartida(){
     
     std::random_shuffle(fichas.begin(), fichas.end());
     
+    campoMovil.text = "movil...";
+    campoNombre.text = "nombre...";
+    
     puntos = 0;
     indexFicha = 0;
-    alphaBotones = 255;
+    
+    estadoPartida = ESTADO_JUGANDO;
 
     mensaje = false;
     alphaMsjStr = 0;
@@ -303,13 +370,13 @@ void juegoFichas::iniciaPartida(){
     
     tiempoPartida.startTimer();
     
-    estadoPartida = ESTADO_JUGANDO;
+    
 }
 
 //--------------------------------------------------------------
 void juegoFichas::lanzaFicha(){
     /// lanzas una imagen
-    
+    alphaBotones = 255;
 
     if(indexFicha<fichas.size()-1){
         indexFicha ++;

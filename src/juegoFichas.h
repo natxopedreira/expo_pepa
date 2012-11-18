@@ -23,7 +23,8 @@
 
 enum EstadoPartida{
     ESTADO_REPOSO,
-    ESTADO_NUEVO_USUARIO,
+    ESTADO_NUEVO_USUARIO_NOMBRE,
+    ESTADO_NUEVO_USUARIO_MOVIL,
     ESTADO_JUGANDO,
     ESTADO_PARTIDA_ACABADA
 };
@@ -35,10 +36,12 @@ public:
     ofxTimer tiempoPartida;
     ofxTimer tiempoEntreFoto;
     
+    ofxTextInputField campoNombre, campoMovil;
     
     ofTrueTypeFont fuenteMarcador;
     ofTrueTypeFont fuenteLeyenda;
     ofTrueTypeFont fuenteAlerta;
+    ofTrueTypeFont fuenteCampos;
     ofSoundPlayer  sndAcierto, sndFallo;
     
     EstadoPartida estadoPartida;
@@ -62,6 +65,7 @@ public:
     void draw();
     void iniciaPartida();
     void renderViewports();
+    void nuevoUsuario();
     
     void cargaFichas();
     void lanzaFicha();
