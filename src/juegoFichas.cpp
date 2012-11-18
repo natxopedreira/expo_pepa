@@ -1,15 +1,15 @@
 //
-//  controlImagenes.cpp
+//  juegoFichas.cpp
 //  pepa
 //
 //  Created by natxo on 09/11/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#include "controlImagenes.h"
+#include "juegoFichas.h"
 
 //--------------------------------------------------------------
-void controlImagenes::setup(){
+void juegoFichas::setup(){
     Tweenzor::init();
     
     /// video que usaremos para enmascarar
@@ -25,8 +25,8 @@ void controlImagenes::setup(){
     botonCoruna.setup(10, 20, "coru", "btn/coru.png");
     botonCadiz.setup(10, 20, "cadiz", "btn/cadiz.png");
 
-    ofAddListener(botonCoruna.seleccionBoton, this,  &controlImagenes::botonCiudad);
-    ofAddListener(botonCadiz.seleccionBoton, this,  &controlImagenes::botonCiudad);
+    ofAddListener(botonCoruna.seleccionBoton, this,  &juegoFichas::botonCiudad);
+    ofAddListener(botonCadiz.seleccionBoton, this,  &juegoFichas::botonCiudad);
     
     /// sonidos para indicar acierto/fallo
     sndAcierto.loadSound("Temple.aiff");
@@ -44,19 +44,22 @@ void controlImagenes::setup(){
     tiempoEntreFoto.setup(1500, false); // iniciamos el timer
     tiempoEntreFoto.stopTimer();
     
-    ofAddListener(tiempoEntreFoto.TIMER_REACHED, this, &controlImagenes::cambiaFoto);
-    ofAddListener(tiempoPartida.TIMER_REACHED, this, &controlImagenes::finTiempoPartida);
+    ofAddListener(tiempoEntreFoto.TIMER_REACHED, this, &juegoFichas::cambiaFoto);
+    ofAddListener(tiempoPartida.TIMER_REACHED, this, &juegoFichas::finTiempoPartida);
     
     cargaFichas(); // creamos el vector con las imagenes
     
     configViewPorts(); // cargamos los fbos para los viewports
     
-    iniciaPartida(); // setea vars y lanza fichas
+   // iniciaPartida(); // setea vars y lanza fichas
 
+    estadoPartida = ESTADO_REPOSO;
+    
+   
 }
 
 //--------------------------------------------------------------
-void controlImagenes::cargaFichas(){
+void juegoFichas::cargaFichas(){
     
     /// cargaremos desde un xml
     /// ahora mismo esta asi para ver
@@ -80,64 +83,127 @@ void controlImagenes::cargaFichas(){
 }
 
 //--------------------------------------------------------------
-void controlImagenes::update(){
-    mascaraVideo.update();
-    Tweenzor::update( ofGetElapsedTimeMillis() );
-    ofSoundUpdate();
+void juegoFichas::update(){
     
-    fichas.at(indexFicha)->update();
-    
-    
-    if(mascaraVideo.isFrameNew()){
-        //si el frame del video es nuevo update la mascara
-        
-        mascara.begin(0);
-            mascaraVideo.draw(-20, -35, 800,700);
-        mascara.end(0);
-        
-        mascara.begin(1);
-            ofSetColor(255,255,255);
-            fichas.at(indexFicha)->imagen.draw(80, 60);
-        mascara.end(1);
-    
-        mascara.update();
+    switch (estadoPartida) {
+        case ESTADO_REPOSO:
+            // EL JUEGO ESTA EN REPOSO = SIN USER
+            
+            fboMensajes.begin();
+            ofClear(0);
+            ofSetColor(255, 255, 255, 255);
+            ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 80, 60);
+            fboMensajes.end(); 
+            
+            break;
+          
+        case ESTADO_PARTIDA_ACABADA:
+            // SE ACABO LA PARTIDA
+            
+            fboMensajes.begin();
+            ofClear(0);
+            ofSetColor(255, 255, 255, 255);
+             ofDrawBitmapStringHighlight("PARTIDA TERMINADA "+ofToString(puntos), 80, 60);
+            fboMensajes.end(); 
+            
+            break;
+            
+        case ESTADO_JUGANDO:
+            // LA PARTIDA ESTA EN CURSO
+            mascaraVideo.update();
+            Tweenzor::update( ofGetElapsedTimeMillis() );
+            ofSoundUpdate();
+            
+            fichas.at(indexFicha)->update();
+            
+            
+            if(mascaraVideo.isFrameNew()){
+                //si el frame del video es nuevo update la mascara
+                
+                mascara.begin(0);
+                mascaraVideo.draw(-20, -35, 800,700);
+                mascara.end(0);
+                
+                mascara.begin(1);
+                ofSetColor(255,255,255);
+                fichas.at(indexFicha)->imagen.draw(80, 60);
+                mascara.end(1);
+                
+                mascara.update();
+            }
+            
+            ///// renderizas los fbos para dar de comer a los viewports
+            renderViewports();
+            
+            
+            botonCoruna.screenPosx = viewportCoru.getPos().x-(viewportCoru.getWidth()/2);
+            botonCoruna.screenPosy = viewportCoru.getPos().y-(viewportCoru.getHeight()/2);
+            
+            botonCadiz.screenPosx = viewportCadiz.getPos().x-(viewportCadiz.getWidth()/2);
+            botonCadiz.screenPosy = viewportCadiz.getPos().y-(viewportCadiz.getHeight()/2);
+            
+            
+            botonCoruna.update();
+            botonCadiz.update();
+            
+            break;            
+            
+        default:
+            break;
     }
+    
 
-    ///// renderizas los fbos para dar de comer a los viewports
-    renderViewports();
-    
-    
-    botonCoruna.screenPosx = viewportCoru.getPos().x-(viewportCoru.getWidth()/2);
-    botonCoruna.screenPosy = viewportCoru.getPos().y-(viewportCoru.getHeight()/2);
-    
-    botonCadiz.screenPosx = viewportCadiz.getPos().x-(viewportCadiz.getWidth()/2);
-    botonCadiz.screenPosy = viewportCadiz.getPos().y-(viewportCadiz.getHeight()/2);
-    
-    
-    botonCoruna.update();
-    botonCadiz.update();
 }
 
 //--------------------------------------------------------------
-void controlImagenes::draw(){
-    /// cada cosa sale en un viewport con mapping y mascara
-    viewportMascara.draw(mascara.getTextureReference());
-    viewportAciertos.draw(fboAciertos.getTextureReference());
-    viewportTiempo.draw(fboTiempo.getTextureReference());
-    viewportCoru.draw(fboCou.getTextureReference());
-    viewportCadiz.draw(fboCadiz.getTextureReference());
+void juegoFichas::draw(){
     
-    if(mensaje){
-        ofPushStyle();
-        // acabas de pulsar una opcion y esto dice ok o fallo
-        ofSetColor(255, 255, 255, alphaMsjStr);
-        fuenteAlerta.drawString(ofToString(mensajeStr), 200, 280);
+    switch (estadoPartida) {
+        case ESTADO_REPOSO:
+            // EL JUEGO ESTA EN REPOSO = SIN USER
+            fboMensajes.draw(400, 300);
+            break;
+            
+            
+        case ESTADO_JUGANDO:
+            // LA PARTIDA ESTA EN CURSO
+            
+            /// cada cosa sale en un viewport con mapping y mascara
+            viewportMascara.draw(mascara.getTextureReference());
+            viewportAciertos.draw(fboAciertos.getTextureReference());
+            viewportTiempo.draw(fboTiempo.getTextureReference());
+            
+            ofPushStyle();
+            ofSetColor(255,255,255,alphaBotones);
+            viewportCoru.draw(botonCoruna.fbo.getTextureReference());
+            viewportCadiz.draw(botonCadiz.fbo.getTextureReference());
+            ofPopStyle();
+            
+            if(mensaje){
+                ofPushStyle();
+                // acabas de pulsar una opcion y esto dice ok o fallo
+                ofSetColor(255, 255, 255, alphaMsjStr);
+                fuenteAlerta.drawString(ofToString(mensajeStr), 200, 280);
+                ofPopStyle();
+            }
+            
+            break;            
         
-        ofPopStyle();
+        case ESTADO_PARTIDA_ACABADA:
+            // SE ACABO LA PARTIDA
+            fboMensajes.draw(400, 300);
+            
+            break;
+            
+        default:
+            break;
     }
+    
+    
+
 }
 //--------------------------------------------------------------
-void controlImagenes::renderViewports(){
+void juegoFichas::renderViewports(){
     
     
     fboAciertos.begin();
@@ -159,7 +225,7 @@ void controlImagenes::renderViewports(){
     ofClear(0);
     ofSetColor(255,255,255);
     // marcador de tiempo restante
-    if(!partidaTerminada){
+    if(estadoPartida == ESTADO_JUGANDO){
         int minutos = (int)tiempoPartida.getTimeLeftInSeconds()/60;
         int segundos = (int)tiempoPartida.getTimeLeftInSeconds() % 60;
         
@@ -171,36 +237,20 @@ void controlImagenes::renderViewports(){
     }
     fboTiempo.end();
     
-    
-    fboCou.begin();
-        ofClear(0);
-        /// botones de seleccion de ciudad
-        ofPushStyle();
-        ofSetColor(255,255,255,alphaBotones);
-        botonCoruna.draw();
-        ofPopStyle();
-    fboCou.end();  
-    
-    fboCadiz.begin();
-        ofClear(0);
-        /// botones de seleccion de ciudad
-        ofPushStyle();
-        ofSetColor(255,255,255,alphaBotones);
-        botonCadiz.draw();
-        ofPopStyle();
-    fboCadiz.end(); 
-
 }
 
 //--------------------------------------------------------------
-void controlImagenes::configViewPorts(){
-    fboMascara.allocate(800, 600);
+void juegoFichas::configViewPorts(){
+
     fboImagen.allocate(640, 480);
     fboAciertos.allocate(320, 240);
-    fboCou.allocate(320, 240);
-    fboCadiz.allocate(320, 240);
     fboTiempo.allocate(320, 240);
     
+    fboMensajes.allocate(800, 600);
+    
+    fboMensajes.begin();
+    ofClear(0);
+    fboMensajes.end();  
     
     fboImagen.begin();
     ofClear(0);
@@ -210,13 +260,6 @@ void controlImagenes::configViewPorts(){
     ofClear(0);
     fboAciertos.end(); 
     
-    fboCou.begin();
-    ofClear(0);
-    fboCou.end();  
-    
-    fboCadiz.begin();
-    ofClear(0);
-    fboCadiz.end(); 
     
     fboTiempo.begin();
     ofClear(0);
@@ -231,11 +274,11 @@ void controlImagenes::configViewPorts(){
 }
 
 //--------------------------------------------------------------
-void controlImagenes::iniciaPartida(){
+void juegoFichas::iniciaPartida(){
     puntos = 0;
     indexFicha = 0;
     alphaBotones = 0;
-    partidaTerminada = false;
+
     mensaje = false;
     alphaMsjStr = 0;
     scaleMsjStr = 0;
@@ -246,10 +289,12 @@ void controlImagenes::iniciaPartida(){
     lanzaFicha();
     
     tiempoPartida.startTimer();
+    
+    estadoPartida = ESTADO_JUGANDO;
 }
 
 //--------------------------------------------------------------
-void controlImagenes::lanzaFicha(){
+void juegoFichas::lanzaFicha(){
     /// lanzas una imagen
     
     alphaBotones = 0;
@@ -273,7 +318,7 @@ void controlImagenes::lanzaFicha(){
 }
 
 //--------------------------------------------------------------
-void controlImagenes::botonCiudad(string & s){
+void juegoFichas::botonCiudad(string & s){
     /// has escojido una ciudad
     
     cout << "boton:: " << s << endl;
@@ -294,15 +339,15 @@ void controlImagenes::botonCiudad(string & s){
 }
 
 //--------------------------------------------------------------
-void controlImagenes::mensajeRespuesta(string s){
+void juegoFichas::mensajeRespuesta(string s){
     mensajeStr = s;
     mensaje = true;
     Tweenzor::add(&alphaMsjStr, 0, 255, 0.0f, 0.3f,EASE_IN_OUT_QUAD);
-    Tweenzor::addCompleteListener( Tweenzor::getTween(&alphaMsjStr), this, &controlImagenes::onCompleteMsg);
+    Tweenzor::addCompleteListener( Tweenzor::getTween(&alphaMsjStr), this, &juegoFichas::onCompleteMsg);
 }
 
 //--------------------------------------------------------------
-void controlImagenes::onCompleteMsg(float* arg) {
+void juegoFichas::onCompleteMsg(float* arg) {
     if(mensajeStr == "correcto"){
         sndAcierto.play();
     }else if (mensajeStr == "error") {
@@ -311,7 +356,7 @@ void controlImagenes::onCompleteMsg(float* arg) {
     tiempoEntreFoto.startTimer();
 }
 //--------------------------------------------------------------
-void controlImagenes::guardaPosiciones(){
+void juegoFichas::guardaPosiciones(){
     viewportImagen.saveSettings();
     viewportAciertos.saveSettings();
     viewportMascara.saveSettings();
@@ -321,11 +366,11 @@ void controlImagenes::guardaPosiciones(){
 
 }
 //--------------------------------------------------------------
-void controlImagenes::cambiaFoto(ofEventArgs & args){
+void juegoFichas::cambiaFoto(ofEventArgs & args){
     lanzaFicha();
 }
 
 //--------------------------------------------------------------
-void controlImagenes::finTiempoPartida(ofEventArgs & args){
-    partidaTerminada = true;
+void juegoFichas::finTiempoPartida(ofEventArgs & args){
+    estadoPartida = ESTADO_PARTIDA_ACABADA;
 }

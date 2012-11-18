@@ -6,37 +6,24 @@ void testApp::setup(){
     ofEnableAlphaBlending();
     ofBackground(0, 0, 0);
     
-    partida = NULL;
-    juegoEmpezado = false;
+    partida = new juegoFichas();
+    partida->setup();
+    
     
     setupGui();
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-   if(juegoEmpezado) partida->update();
+   partida->update();
 }
 
 
 void testApp::draw(){
+      partida->draw();
+      if(verGui) gui.draw();
     
-    if(juegoEmpezado){
-        if(!partida->partidaTerminada){
-            partida->draw();
-        }else{
-            ofDrawBitmapStringHighlight("PARTIDA TERMINADA "+ofToString(partida->puntos), 500, 350);
-            /// para hacer  un loop y que se pruebe sola
-            if(juegoEmpezado){
-                partida->iniciaPartida();
-            }
-        }
-    }else{
-         ofDrawBitmapStringHighlight("PULSA LA TECLA n PARA EMPEZAR A JUGAR", 500, 350);
-    }
-    
-    if(verGui) gui.draw();
-    
-    //ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), 10, 10);
+    ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), 10, 10);
 }
 
 
@@ -46,21 +33,13 @@ void testApp::keyPressed(int key){
     
     switch (key) {
         case 'n':
-            partida = new controlImagenes();
-            partida->setup();
-            juegoEmpezado = true;
-            break;
+            partida->iniciaPartida();
             
-        case 'd':
-            if(juegoEmpezado){
-                partida->iniciaPartida();
-            }
-            break; 
+            break;
+             
 
         case 's':
-            if(partida){
-                partida->guardaPosiciones();
-            }
+            partida->guardaPosiciones();
             break; 
 
             

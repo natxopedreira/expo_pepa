@@ -19,8 +19,13 @@
 #include "ofxInteractiveViewPort.h"
 #include "ofxTimer.h"
 
-
-class controlImagenes{
+enum EstadoPartida{
+    ESTADO_REPOSO,
+    ESTADO_NUEVO_USUARIO,
+    ESTADO_JUGANDO,
+    ESTADO_PARTIDA_ACABADA
+};
+class juegoFichas{
 public:
 
     ofxMask mascara;
@@ -32,6 +37,7 @@ public:
     ofTrueTypeFont fuenteAlerta;
     ofSoundPlayer  sndAcierto, sndFallo;
     
+    EstadoPartida estadoPartida;
     
     vector<imagenJuego*> fichas;
     
@@ -42,7 +48,6 @@ public:
     string mensajeStr;
     float alphaMsjStr;
     float scaleMsjStr;
-    bool partidaTerminada;
     
     boton botonCoruna;
     boton botonCadiz;
@@ -66,7 +71,7 @@ public:
     void guardaPosiciones();
     
     ofxInteractiveViewPort viewportImagen, viewportAciertos, viewportMascara, viewportCoru, viewportCadiz, viewportTiempo;
-    ofFbo fboImagen, fboAciertos, fboMascara, fboCou, fboCadiz, fboTiempo;
+    ofFbo fboImagen, fboAciertos, fboTiempo, fboMensajes;
     
 
 };

@@ -3,7 +3,7 @@
 #include "ofMain.h"
 
 //non core addons
-#include "controlImagenes.h"
+#include "juegoFichas.h"
 #include "ofxGui.h"
 
 class testApp : public ofBaseApp{
@@ -33,10 +33,8 @@ class testApp : public ofBaseApp{
         void btnGuiAciertosMask(bool & pressed);
         void btnGuiMascaraMask(bool & pressed);
         void btnGuiTiempoMask(bool & pressed);
-    
-        bool juegoEmpezado;
 		
-	controlImagenes * partida;
+	juegoFichas * partida;
     
     ofxPanel gui;
     ofxToggle vImagenOn, vAciertosOn, vMascaraOn, vCoruOn, vCadizOn, vTiempoOn;

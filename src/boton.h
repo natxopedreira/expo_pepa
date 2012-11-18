@@ -22,12 +22,14 @@ public:
     
     ofImage fondo;
     ofEvent<string> seleccionBoton;
+    ofFbo fbo;
     
 	boton();
 	
 	void setup(int _posx,int _posy, string _valor, string _url);
 	void update();
 	void draw();
+    
     
     bool isUnder(int px, int py);
     
