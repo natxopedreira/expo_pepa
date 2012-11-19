@@ -77,9 +77,9 @@ void juegoFichas::setup(){
 //--------------------------------------------------------------
 void juegoFichas::nuevoUsuario(){
     estadoPartida = ESTADO_NUEVO_USUARIO_NOMBRE;
-    campoNombre.beginEditing();
     campoMovil.text = "movil...";
     campoNombre.text = "nombre...";
+    campoNombre.beginEditing();
 }
 //--------------------------------------------------------------
 void juegoFichas::cargaFichas(){

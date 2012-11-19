@@ -35,7 +35,6 @@ void testApp::keyPressed(int key){
                 partida->nuevoUsuario();
             }
             
-            
             break;
              
 
@@ -152,10 +151,10 @@ void testApp::mousePressed(int x, int y, int button){
     if(partida->viewportMascara.isOver(ofPoint(x, y))){
         if(partida->estadoPartida == ESTADO_NUEVO_USUARIO_NOMBRE){
             partida->estadoPartida = ESTADO_NUEVO_USUARIO_MOVIL;
+            partida->campoNombre.endEditing();
             partida->campoMovil.beginEditing();
         }else if (partida->estadoPartida == ESTADO_NUEVO_USUARIO_MOVIL) {
             partida->campoMovil.endEditing();
-            partida->campoNombre.endEditing();
             partida->iniciaPartida();
         }
     }
