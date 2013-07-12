@@ -26,26 +26,25 @@
 
 #include "ofMain.h"
 
-// non core addons
 //#include "ofxTimer.h"
 
-
-class imagenJuego{
-	
-	public:
-	
-	ofImage imagen;
-    string ciudad;
-	//ofxTimer temporizador;
-	int ptos;
-    float tiempo;
-	
+class imagenJuego {
+public:
 	imagenJuego();
+    
+    void    setup(string rutaImagen,string _ciudad,string _msg);
+	void    update();
+	void    draw();
+
+    ofImage imagen;
+    string  ciudad;
+    string  msg;
+private:
+	void    timeOut(ofEventArgs & args);
+
+//	ofxTimer    temporizador;
 	
-	void setup(string rutaImagen,string _ciudad);
-	void update();
-	void draw();
-	
-	void timeOut(ofEventArgs & args);
+    float   tiempo;
+    int     ptos;
 };
 #endif

@@ -15,11 +15,13 @@ imagenJuego::imagenJuego(){
 }
 
 //--------------------------------------------------------------
-void imagenJuego::setup(string rutaImagen, string _ciudad){
+void imagenJuego::setup(string rutaImagen, string _ciudad,string _msg){
 	
 	imagen.loadImage(rutaImagen); // cargamos la imagen
     
     ciudad = _ciudad;
+    
+    msg = _msg;
     
 	//temporizador.setup(tiempo, false); // iniciamos el timer
     //temporizador.stopTimer();

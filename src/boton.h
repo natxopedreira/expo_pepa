@@ -12,34 +12,36 @@
 #define _BOTON
 
 #include "ofMain.h"
+#include "ofxTweenzor.h"
 
-class boton {
+class boton : public ofRectangle {
 public:
-    int ancho, alto, posx, posy, screenPosx, screenPosy;
-    bool touchOver;
-    bool activo;
-    string valor;
-    string label;
-    
-    ofImage fondo;
-    ofEvent<string> seleccionBoton;
-    ofFbo fbo;
-    ofTrueTypeFont * fuente;
     
 	boton();
 	
-	void setup(int _posx,int _posy, string _valor, string _url, string _label, ofTrueTypeFont & _fuente);
+	void setup(int _posx,int _posy,int _ancho,int _alto, string _valor, string _label, ofTrueTypeFont & _fuente);
 	void update();
 	void render();
     
+    void reset();
+    void animaOk();
+    void animaError();
     
-    bool isUnder(int px, int py);
+    //    bool isUnder(int px, int py);     // REPLACED with ofRectangle.inside();
+    //    int     screenPosx, screenPosy;   // REPLACED with ofRectangle.x and ofRectangle.y;
+    //    int     ancho, alto;              // REPLACED with ofRectangle.width and ofRectangle.height;
     
-    void mousePressed(ofMouseEventArgs& rArgs);
-    void mouseReleased(ofMouseEventArgs& rArgs);
+private:
+
+    ofTrueTypeFont * fuente;
+    
+    string  valor;
+    string  label;
+    float   cr,cg,cb;
+    float   tr,tg,tb;
+    
+    int     posx, posy;
+    bool    touchOver;
 };
-
-
-
 
 #endif
